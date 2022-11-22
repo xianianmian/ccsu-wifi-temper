@@ -6,8 +6,12 @@
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="central_text chart-wrapper">
-          {{ dateTime }}
-          <p>总运行数量10个</p>
+          <span class="central_text_top">{{dateTime}}</span>
+          <div class="central_text_center">
+            <div style="font-size:20px;color:#7a9064;margin-bottom: 10px;">电解槽总运行数量</div>
+            <div style="color:#5dbec8;font-size: 20px;"><span style="font-size:45px;">12</span>个</div>
+            <div style="color:#7a9064;font-size:20px">安全运行率100%</div>
+          </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
@@ -170,10 +174,20 @@ export default {
 
   .central_text {
     font-family: "Let's go Digital", serif;
-    font-size: 64px;
     text-align: center;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
   }
+  .central_text_top{
+    margin-top: 10px;
+    color: #4d6fc1;
+  }
+  .central_text_center{
+    margin: 82px;
+  }
+
 
   .text_title {
     font-family: "Adobe 黑体 Std R", serif;
