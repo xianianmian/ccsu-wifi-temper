@@ -2,9 +2,7 @@
   <div class="dashboard-editor-container">
     <el-row :gutter="32">
       <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <dy-line-chart chartTitle="zigbee1(实时接收)" :chart-data="device1"/>
-        </div>
+        zigbee 终端 断网 电池监测 （支持查询）
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         <div class="central_text chart-wrapper">
@@ -20,16 +18,19 @@
     </el-row>
     <el-row :gutter="32">
       <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <dy-line-chart chartTitle="zigbee2" :chart-data="lineChartData"/>
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
+        zigbee终端状态实时分页展示（支持查询）
         <div class="chart-wrapper">
           <state-form/>
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
+        温度实时曲线展示（支持查询，以电解槽或zigbee为单位）
+        <div class="chart-wrapper">
+          <dy-line-chart chartTitle="zigbee2" :chart-data="lineChartData"/>
+        </div>
+      </el-col>
+      <el-col :xs="24" :sm="24" :lg="8">
+        温度数据实时分页展示（支持查询）
         <div class="chart-wrapper">
           <dy-line-chart chartTitle="zigbee3" :chart-data="lineChartData"/>
         </div>
