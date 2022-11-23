@@ -1,13 +1,24 @@
 <template>
   <div class="dashboard-editor-container">
     <el-row :gutter="10">
+      <el-col :xs="24" :sm="24" :lg="24">
+        <div style="margin: 10px">
+          <span>车间选择：</span>
+          <el-radio-group v-model="workshopSelected" size="mini">
+            <el-radio-button label="车间1"></el-radio-button>
+            <el-radio-button label="车间2"></el-radio-button>
+            <el-radio-button label="车间3"></el-radio-button>
+            <el-radio-button label="车间4"></el-radio-button>
+          </el-radio-group>
+        </div>
+      </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         zigbee 终端 断网 电池监测 （支持查询）
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
        <span>电解槽在线数量</span>
         <div class="central_text chart-wrapper">
-          <span class="central_text_top">{{dateTime}}</span>
+          <span class="central_text_top">{{ dateTime }}</span>
           <div class="central_text_center">
             <div style="font-size:20px;color:#7a9064;margin-bottom: 10px;">电解槽总运行数量</div>
             <div style="color:#5dbec8;font-size: 20px;"><span style="font-size:45px;">12</span>个</div>
@@ -24,19 +35,18 @@
     </el-row>
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="8">
-<!--        zigbee终端状态实时分页展示（支持查询）-->
-        <div class="chart-wrapper">
-          <state-form/>
-        </div>
+
+
+        zigbee终端状态实时分页展示（支持查询）
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-<!--        温度实时曲线展示（支持查询，以电解槽或zigbee为单位）-->
-        <div class="chart-wrapper">
-          <dy-line-chart chartTitle="zigbee2" :chart-data="lineChartData"/>
-        </div>
+        温度实时曲线展示（支持查询，以电解槽或zigbee为单位）
+          <div class="chart-wrapper">
+            <dy-line-chart chartTitle="zigbee2" :chart-data="lineChartData"/>
+          </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-<!--        温度数据实时分页展示（支持查询）-->
+        温度数据实时分页展示（支持查询）
         <div class="chart-wrapper">
           <dy-line-chart chartTitle="zigbee3" :chart-data="lineChartData"/>
         </div>
@@ -99,6 +109,7 @@ export default {
   },
   data() {
     return {
+      workshopSelected: '车间1',
       lineChartData: lineChartData.temp,
       pieChartData: pieChartData.pieData,
       dateTime: '',
@@ -170,7 +181,7 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard-editor-container {
-  padding: 32px;
+  padding: 12px 32px;
   background-color: rgb(240, 242, 245);
   position: relative;
 
@@ -182,11 +193,13 @@ export default {
     flex-direction: column;
     justify-content: space-around;
   }
-  .central_text_top{
+
+  .central_text_top {
     margin-top: 10px;
     color: #4d6fc1;
   }
-  .central_text_center{
+
+  .central_text_center {
     margin: 82px;
   }
 
