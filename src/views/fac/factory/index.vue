@@ -1,26 +1,18 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="车间名称" prop="workshopName">
+      <el-form-item label="工厂名称" prop="factoryName">
         <el-input
-          v-model="queryParams.workshopName"
-          placeholder="请输入车间名称"
+          v-model="queryParams.factoryName"
+          placeholder="请输入工厂名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车间位置" prop="workshopLocation">
+      <el-form-item label="工厂地址" prop="factoryLocation">
         <el-input
-          v-model="queryParams.workshopLocation"
-          placeholder="请输入车间位置"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="所属工厂的编号" prop="factoryId">
-        <el-input
-          v-model="queryParams.factoryId"
-          placeholder="请输入所属工厂的编号"
+          v-model="queryParams.factoryLocation"
+          placeholder="请输入工厂地址"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -39,7 +31,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['fac:workshop:add']"
+          v-hasPermi="['fac:factory:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -50,7 +42,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['fac:workshop:edit']"
+          v-hasPermi="['fac:factory:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -61,7 +53,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['fac:workshop:remove']"
+          v-hasPermi="['fac:factory:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -71,18 +63,17 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['fac:workshop:export']"
+          v-hasPermi="['fac:factory:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="workshopList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="factoryList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="车间编号，自增" align="center" prop="workshopId" />
-      <el-table-column label="车间名称" align="center" prop="workshopName" />
-      <el-table-column label="车间位置" align="center" prop="workshopLocation" />
-      <el-table-column label="所属工厂的编号" align="center" prop="factoryId" />
+      <el-table-column label="工厂编号" align="center" prop="factoryId" />
+      <el-table-column label="工厂名称" align="center" prop="factoryName" />
+      <el-table-column label="工厂地址" align="center" prop="factoryLocation" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -90,14 +81,14 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['fac:workshop:edit']"
+            v-hasPermi="['fac:factory:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['fac:workshop:remove']"
+            v-hasPermi="['fac:factory:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -111,38 +102,35 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改生产车间对话框 -->
+    <!-- 添加或修改工厂管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="车间名称" prop="workshopName">
-          <el-input v-model="form.workshopName" placeholder="请输入车间名称" />
+        <el-form-item label="工厂名称" prop="factoryName">
+          <el-input v-model="form.factoryName" placeholder="请输入工厂名称" />
         </el-form-item>
-        <el-form-item label="车间位置" prop="workshopLocation">
-          <el-input v-model="form.workshopLocation" placeholder="请输入车间位置" />
+        <el-form-item label="工厂地址" prop="factoryLocation">
+          <el-input v-model="form.factoryLocation" placeholder="请输入工厂地址" />
         </el-form-item>
-        <el-form-item label="所属工厂的编号" prop="factoryId">
-          <el-input v-model="form.factoryId" placeholder="请输入所属工厂的编号" />
-        </el-form-item>
-        <el-divider content-position="center">电解槽管理信息</el-divider>
+        <el-divider content-position="center">生产车间信息</el-divider>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddFacElectrolyticCell">添加</el-button>
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddFacWorkshop">添加</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleteFacElectrolyticCell">删除</el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleteFacWorkshop">删除</el-button>
           </el-col>
         </el-row>
-        <el-table :data="facElectrolyticCellList" :row-class-name="rowFacElectrolyticCellIndex" @selection-change="handleFacElectrolyticCellSelectionChange" ref="facElectrolyticCell">
+        <el-table :data="facWorkshopList" :row-class-name="rowFacWorkshopIndex" @selection-change="handleFacWorkshopSelectionChange" ref="facWorkshop">
           <el-table-column type="selection" width="50" align="center" />
           <el-table-column label="序号" align="center" prop="index" width="50"/>
-          <el-table-column label="电解槽名称" prop="electrolyticcellName" width="150">
+          <el-table-column label="车间名称" prop="workshopName" width="150">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.electrolyticcellName" placeholder="请输入电解槽名称" />
+              <el-input v-model="scope.row.workshopName" placeholder="请输入车间名称" />
             </template>
           </el-table-column>
-          <el-table-column label="电解槽的位置" prop="electrolyticcellLocation" width="150">
+          <el-table-column label="车间位置" prop="workshopLocation" width="150">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.electrolyticcellLocation" placeholder="请输入电解槽的位置" />
+              <el-input v-model="scope.row.workshopLocation" placeholder="请输入车间位置" />
             </template>
           </el-table-column>
         </el-table>
@@ -156,10 +144,10 @@
 </template>
 
 <script>
-import { listWorkshop, getWorkshop, delWorkshop, addWorkshop, updateWorkshop } from "@/api/fac/workshop";
+import { listFactory, getFactory, delFactory, addFactory, updateFactory } from "@/api/fac/factory";
 
 export default {
-  name: "Workshop",
+  name: "Factory",
   data() {
     return {
       // 遮罩层
@@ -167,7 +155,7 @@ export default {
       // 选中数组
       ids: [],
       // 子表选中数据
-      checkedFacElectrolyticCell: [],
+      checkedFacWorkshop: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -176,10 +164,10 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
+      // 工厂管理表格数据
+      factoryList: [],
       // 生产车间表格数据
-      workshopList: [],
-      // 电解槽管理表格数据
-      facElectrolyticCellList: [],
+      facWorkshopList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -188,9 +176,8 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        workshopName: null,
-        workshopLocation: null,
-        factoryId: null
+        factoryName: null,
+        factoryLocation: null
       },
       // 表单参数
       form: {},
@@ -203,11 +190,11 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询生产车间列表 */
+    /** 查询工厂管理列表 */
     getList() {
       this.loading = true;
-      listWorkshop(this.queryParams).then(response => {
-        this.workshopList = response.rows;
+      listFactory(this.queryParams).then(response => {
+        this.factoryList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -220,12 +207,11 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        workshopId: null,
-        workshopName: null,
-        workshopLocation: null,
-        factoryId: null
+        factoryId: null,
+        factoryName: null,
+        factoryLocation: null
       };
-      this.facElectrolyticCellList = [];
+      this.facWorkshopList = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -240,7 +226,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.workshopId)
+      this.ids = selection.map(item => item.factoryId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -248,32 +234,32 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加生产车间";
+      this.title = "添加工厂管理";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const workshopId = row.workshopId || this.ids
-      getWorkshop(workshopId).then(response => {
+      const factoryId = row.factoryId || this.ids
+      getFactory(factoryId).then(response => {
         this.form = response.data;
-        this.facElectrolyticCellList = response.data.facElectrolyticCellList;
+        this.facWorkshopList = response.data.facWorkshopList;
         this.open = true;
-        this.title = "修改生产车间";
+        this.title = "修改工厂管理";
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.facElectrolyticCellList = this.facElectrolyticCellList;
-          if (this.form.workshopId != null) {
-            updateWorkshop(this.form).then(response => {
+          this.form.facWorkshopList = this.facWorkshopList;
+          if (this.form.factoryId != null) {
+            updateFactory(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addWorkshop(this.form).then(response => {
+            addFactory(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -284,46 +270,46 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const workshopIds = row.workshopId || this.ids;
-      this.$modal.confirm('是否确认删除生产车间编号为"' + workshopIds + '"的数据项？').then(function() {
-        return delWorkshop(workshopIds);
+      const factoryIds = row.factoryId || this.ids;
+      this.$modal.confirm('是否确认删除工厂管理编号为"' + factoryIds + '"的数据项？').then(function() {
+        return delFactory(factoryIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
     },
-	/** 电解槽管理序号 */
-    rowFacElectrolyticCellIndex({ row, rowIndex }) {
+	/** 生产车间序号 */
+    rowFacWorkshopIndex({ row, rowIndex }) {
       row.index = rowIndex + 1;
     },
-    /** 电解槽管理添加按钮操作 */
-    handleAddFacElectrolyticCell() {
+    /** 生产车间添加按钮操作 */
+    handleAddFacWorkshop() {
       let obj = {};
-      obj.electrolyticcellName = "";
-      obj.electrolyticcellLocation = "";
-      this.facElectrolyticCellList.push(obj);
+      obj.workshopName = "";
+      obj.workshopLocation = "";
+      this.facWorkshopList.push(obj);
     },
-    /** 电解槽管理删除按钮操作 */
-    handleDeleteFacElectrolyticCell() {
-      if (this.checkedFacElectrolyticCell.length == 0) {
-        this.$modal.msgError("请先选择要删除的电解槽管理数据");
+    /** 生产车间删除按钮操作 */
+    handleDeleteFacWorkshop() {
+      if (this.checkedFacWorkshop.length == 0) {
+        this.$modal.msgError("请先选择要删除的生产车间数据");
       } else {
-        const facElectrolyticCellList = this.facElectrolyticCellList;
-        const checkedFacElectrolyticCell = this.checkedFacElectrolyticCell;
-        this.facElectrolyticCellList = facElectrolyticCellList.filter(function(item) {
-          return checkedFacElectrolyticCell.indexOf(item.index) == -1
+        const facWorkshopList = this.facWorkshopList;
+        const checkedFacWorkshop = this.checkedFacWorkshop;
+        this.facWorkshopList = facWorkshopList.filter(function(item) {
+          return checkedFacWorkshop.indexOf(item.index) == -1
         });
       }
     },
     /** 复选框选中数据 */
-    handleFacElectrolyticCellSelectionChange(selection) {
-      this.checkedFacElectrolyticCell = selection.map(item => item.index)
+    handleFacWorkshopSelectionChange(selection) {
+      this.checkedFacWorkshop = selection.map(item => item.index)
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('fac/workshop/export', {
+      this.download('fac/factory/export', {
         ...this.queryParams
-      }, `workshop_${new Date().getTime()}.xlsx`)
+      }, `factory_${new Date().getTime()}.xlsx`)
     }
   }
 };

@@ -1,44 +1,44 @@
 import request from '@/utils/request'
 
 // 查询工厂管理列表
-export function listFactoryManage(query) {
+export function listFactory(query) {
   return request({
-    url: '/fac/factoryManage/list',
+    url: '/fac/factory/list',
     method: 'get',
     params: query
   })
 }
 
 // 查询工厂管理详细
-export function getFactoryManage(factoryId) {
+export function getFactory(factoryId) {
   return request({
-    url: '/fac/factoryManage/' + factoryId,
+    url: '/fac/factory/' + factoryId,
     method: 'get'
   })
 }
 
 // 新增工厂管理
-export function addFactoryManage(data) {
+export function addFactory(data) {
   return request({
-    url: '/fac/factoryManage',
+    url: '/fac/factory',
     method: 'post',
     data: data
   })
 }
 
 // 修改工厂管理
-export function updateFactoryManage(data) {
+export function updateFactory(data) {
   return request({
-    url: '/fac/factoryManage',
+    url: '/fac/factory',
     method: 'put',
     data: data
   })
 }
 
 // 删除工厂管理
-export function delFactoryManage(factoryId) {
+export function delFactory(factoryId) {
   return request({
-    url: '/fac/factoryManage/' + factoryId,
+    url: '/fac/factory/' + factoryId,
     method: 'delete'
   })
 }

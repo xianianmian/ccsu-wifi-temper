@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询温度采集列表
+// 查询温度管理列表
 export function listTemper(query) {
   return request({
     url: '/fac/temper/list',
@@ -9,7 +9,7 @@ export function listTemper(query) {
   })
 }
 
-// 查询温度采集详细
+// 查询温度管理详细
 export function getTemper(temperId) {
   return request({
     url: '/fac/temper/' + temperId,
@@ -17,7 +17,7 @@ export function getTemper(temperId) {
   })
 }
 
-// 新增温度采集
+// 新增温度管理
 export function addTemper(data) {
   return request({
     url: '/fac/temper',
@@ -26,7 +26,7 @@ export function addTemper(data) {
   })
 }
 
-// 修改温度采集
+// 修改温度管理
 export function updateTemper(data) {
   return request({
     url: '/fac/temper',
@@ -35,7 +35,7 @@ export function updateTemper(data) {
   })
 }
 
-// 删除温度采集
+// 删除温度管理
 export function delTemper(temperId) {
   return request({
     url: '/fac/temper/' + temperId,

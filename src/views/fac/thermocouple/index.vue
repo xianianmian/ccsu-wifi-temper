@@ -1,18 +1,26 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="工厂名称" prop="factoryName">
+      <el-form-item label="热点偶名称" prop="thermocoupleName">
         <el-input
-          v-model="queryParams.factoryName"
-          placeholder="请输入工厂名称"
+          v-model="queryParams.thermocoupleName"
+          placeholder="请输入热点偶名称"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="工厂地址" prop="factoryLocation">
+      <el-form-item label="热点偶所在的位置" prop="thermocoupleLocation">
         <el-input
-          v-model="queryParams.factoryLocation"
-          placeholder="请输入工厂地址"
+          v-model="queryParams.thermocoupleLocation"
+          placeholder="请输入热点偶所在的位置"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="所属的终端名称" prop="endDeviceId">
+        <el-input
+          v-model="queryParams.endDeviceId"
+          placeholder="请输入所属的终端编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -31,7 +39,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['fac:factoryManage:add']"
+          v-hasPermi="['fac:thermocouple:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -42,7 +50,7 @@
           size="mini"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['fac:factoryManage:edit']"
+          v-hasPermi="['fac:thermocouple:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -53,7 +61,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['fac:factoryManage:remove']"
+          v-hasPermi="['fac:thermocouple:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -63,17 +71,18 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['fac:factoryManage:export']"
+          v-hasPermi="['fac:thermocouple:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="factoryManageList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="thermocoupleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="工厂编号" align="center" prop="factoryId" />
-      <el-table-column label="工厂名称" align="center" prop="factoryName" />
-      <el-table-column label="工厂地址" align="center" prop="factoryLocation" />
+      <el-table-column label="热点偶编号" align="center" prop="thermocoupleId" />
+      <el-table-column label="热点偶名称" align="center" prop="thermocoupleName" />
+      <el-table-column label="热点偶所在的位置" align="center" prop="thermocoupleLocation" />
+      <el-table-column label="所属的终端编号" align="center" prop="endDeviceId" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -81,19 +90,19 @@
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['fac:factoryManage:edit']"
+            v-hasPermi="['fac:thermocouple:edit']"
           >修改</el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['fac:factoryManage:remove']"
+            v-hasPermi="['fac:thermocouple:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -102,38 +111,21 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改工厂管理对话框 -->
+    <!-- 添加或修改热电偶对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="工厂名称" prop="factoryName">
-          <el-input v-model="form.factoryName" placeholder="请输入工厂名称" />
+        <el-form-item label="热点偶编号" prop="thermocoupleId">
+          <el-input v-model="form.thermocoupleId" placeholder="请输入热点偶编号" />
         </el-form-item>
-        <el-form-item label="工厂地址" prop="factoryLocation">
-          <el-input v-model="form.factoryLocation" placeholder="请输入工厂地址" />
+        <el-form-item label="热点偶名称" prop="thermocoupleName">
+          <el-input v-model="form.thermocoupleName" placeholder="请输入热点偶名称" />
         </el-form-item>
-        <el-divider content-position="center">车间管理信息</el-divider>
-        <el-row :gutter="10" class="mb8">
-          <el-col :span="1.5">
-            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddFacWorkshop">添加</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleteFacWorkshop">删除</el-button>
-          </el-col>
-        </el-row>
-        <el-table :data="facWorkshopList" :row-class-name="rowFacWorkshopIndex" @selection-change="handleFacWorkshopSelectionChange" ref="facWorkshop">
-          <el-table-column type="selection" width="50" align="center" />
-          <el-table-column label="序号" align="center" prop="index" width="50"/>
-          <el-table-column label="车间名称" prop="workshopName" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.workshopName" placeholder="请输入车间名称" />
-            </template>
-          </el-table-column>
-          <el-table-column label="车间位置" prop="workshopLocation" width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.workshopLocation" placeholder="请输入车间位置" />
-            </template>
-          </el-table-column>
-        </el-table>
+        <el-form-item label="热点偶所在的位置" prop="thermocoupleLocation">
+          <el-input v-model="form.thermocoupleLocation" placeholder="请输入热点偶所在的位置" />
+        </el-form-item>
+        <el-form-item label="所属的终端编号" prop="endDeviceId">
+          <el-input v-model="form.endDeviceId" placeholder="请输入所属的终端编号" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -144,18 +136,16 @@
 </template>
 
 <script>
-import { listFactoryManage, getFactoryManage, delFactoryManage, addFactoryManage, updateFactoryManage } from "@/api/fac/factoryManage";
+import { listThermocouple, getThermocouple, delThermocouple, addThermocouple, updateThermocouple } from "@/api/fac/thermocouple";
 
 export default {
-  name: "FactoryManage",
+  name: "Thermocouple",
   data() {
     return {
       // 遮罩层
       loading: true,
       // 选中数组
       ids: [],
-      // 子表选中数据
-      checkedFacWorkshop: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -164,10 +154,8 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 工厂管理表格数据
-      factoryManageList: [],
-      // 车间管理表格数据
-      facWorkshopList: [],
+      // 热电偶表格数据
+      thermocoupleList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -176,25 +164,27 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        factoryName: null,
-        factoryLocation: null
+        thermocoupleName: null,
+        thermocoupleLocation: null,
+        endDeviceId: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-      }
+      },
+      isEdit:false
     };
   },
   created() {
     this.getList();
   },
   methods: {
-    /** 查询工厂管理列表 */
+    /** 查询热电偶列表 */
     getList() {
       this.loading = true;
-      listFactoryManage(this.queryParams).then(response => {
-        this.factoryManageList = response.rows;
+      listThermocouple(this.queryParams).then(response => {
+        this.thermocoupleList = response.rows;
         this.total = response.total;
         this.loading = false;
       });
@@ -207,11 +197,11 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        factoryId: null,
-        factoryName: null,
-        factoryLocation: null
+        thermocoupleId: null,
+        thermocoupleName: null,
+        thermocoupleLocation: null,
+        endDeviceId: null
       };
-      this.facWorkshopList = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -226,7 +216,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.factoryId)
+      this.ids = selection.map(item => item.thermocoupleId)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -234,32 +224,32 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加工厂管理";
+      this.title = "添加热电偶";
+      this.isEdit=false
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const factoryId = row.factoryId || this.ids
-      getFactoryManage(factoryId).then(response => {
+      const thermocoupleId = row.thermocoupleId || this.ids
+      getThermocouple(thermocoupleId).then(response => {
         this.form = response.data;
-        this.facWorkshopList = response.data.facWorkshopList;
         this.open = true;
-        this.title = "修改工厂管理";
+        this.title = "修改热电偶";
+        this.isEdit=true
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.form.facWorkshopList = this.facWorkshopList;
-          if (this.form.factoryId != null) {
-            updateFactoryManage(this.form).then(response => {
+          if (this.isEdit) {
+            updateThermocouple(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addFactoryManage(this.form).then(response => {
+            addThermocouple(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -270,46 +260,19 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const factoryIds = row.factoryId || this.ids;
-      this.$modal.confirm('是否确认删除工厂管理编号为"' + factoryIds + '"的数据项？').then(function() {
-        return delFactoryManage(factoryIds);
+      const thermocoupleIds = row.thermocoupleId || this.ids;
+      this.$modal.confirm('是否确认删除热电偶编号为"' + thermocoupleIds + '"的数据项？').then(function() {
+        return delThermocouple(thermocoupleIds);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
     },
-	/** 车间管理序号 */
-    rowFacWorkshopIndex({ row, rowIndex }) {
-      row.index = rowIndex + 1;
-    },
-    /** 车间管理添加按钮操作 */
-    handleAddFacWorkshop() {
-      let obj = {};
-      obj.workshopName = "";
-      obj.workshopLocation = "";
-      this.facWorkshopList.push(obj);
-    },
-    /** 车间管理删除按钮操作 */
-    handleDeleteFacWorkshop() {
-      if (this.checkedFacWorkshop.length == 0) {
-        this.$modal.msgError("请先选择要删除的车间管理数据");
-      } else {
-        const facWorkshopList = this.facWorkshopList;
-        const checkedFacWorkshop = this.checkedFacWorkshop;
-        this.facWorkshopList = facWorkshopList.filter(function(item) {
-          return checkedFacWorkshop.indexOf(item.index) == -1
-        });
-      }
-    },
-    /** 复选框选中数据 */
-    handleFacWorkshopSelectionChange(selection) {
-      this.checkedFacWorkshop = selection.map(item => item.index)
-    },
     /** 导出按钮操作 */
     handleExport() {
-      this.download('fac/factoryManage/export', {
+      this.download('fac/thermocouple/export', {
         ...this.queryParams
-      }, `factoryManage_${new Date().getTime()}.xlsx`)
+      }, `thermocouple_${new Date().getTime()}.xlsx`)
     }
   }
 };

@@ -1,59 +1,58 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="150px">
-<!--      <el-form-item label="温度值1" prop="beginTemp1,endTemp1">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.beginTemp1"-->
-<!--          placeholder="请输入起始温度值1"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--        <el-input-->
-<!--          v-model="queryParams.endTemp1"-->
-<!--          placeholder="请输入结尾温度值1"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="温度值2" prop="temp2">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.temp2"-->
-<!--          placeholder="请输入温度值2"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="温度值3" prop="temp3">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.temp3"-->
-<!--          placeholder="请输入温度值3"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="温度值4" prop="temp4">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.temp4"-->
-<!--          placeholder="请输入温度值4"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-      <el-form-item label="采集的时间">
-        <el-date-picker
-          v-model="daterangeAcquisitionTime"
-          style="width: 400px"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          type="datetimerange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="所属车间的名称" prop="workshopName">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="温度值" prop="temp">
         <el-input
-          v-model="queryParams.workshopName"
-          placeholder="请输入所属车间的名称"
+          v-model="queryParams.temp"
+          placeholder="请输入温度值"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="采集的时间" prop="acquisitionTime">
+        <el-date-picker clearable
+          v-model="queryParams.acquisitionTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择采集的时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="终端设备的编号" prop="deviceId">
+        <el-input
+          v-model="queryParams.deviceId"
+          placeholder="请输入终端设备的编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="终端设备的名称" prop="deviceName">
+        <el-input
+          v-model="queryParams.deviceName"
+          placeholder="请输入终端设备的名称"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="热电偶的编号" prop="thermocoupleId">
+        <el-input
+          v-model="queryParams.thermocoupleId"
+          placeholder="请输入热电偶的编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="热电偶的名称" prop="thermocoupleName">
+        <el-input
+          v-model="queryParams.thermocoupleName"
+          placeholder="请输入热电偶的名称"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">
+        <el-input
+          v-model="queryParams.electrolyticCellId"
+          placeholder="请输入所属电解槽的编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -66,10 +65,26 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="采集设备的名称" prop="deviceName">
+      <el-form-item label="所属车间的编号" prop="workshopId">
         <el-input
-          v-model="queryParams.deviceName"
-          placeholder="请输入采集设备的名称"
+          v-model="queryParams.workshopId"
+          placeholder="请输入所属车间的编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="所属车间的名称" prop="workshopName">
+        <el-input
+          v-model="queryParams.workshopName"
+          placeholder="请输入所属车间的名称"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="所属工厂的编号" prop="factoryId">
+        <el-input
+          v-model="queryParams.factoryId"
+          placeholder="请输入所属工厂的编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -89,38 +104,38 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          icon="el-icon-plus"-->
-<!--          size="mini"-->
-<!--          @click="handleAdd"-->
-<!--          v-hasPermi="['fac:temper:add']"-->
-<!--        >新增</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="success"-->
-<!--          plain-->
-<!--          icon="el-icon-edit"-->
-<!--          size="mini"-->
-<!--          :disabled="single"-->
-<!--          @click="handleUpdate"-->
-<!--          v-hasPermi="['fac:temper:edit']"-->
-<!--        >修改</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="danger"-->
-<!--          plain-->
-<!--          icon="el-icon-delete"-->
-<!--          size="mini"-->
-<!--          :disabled="multiple"-->
-<!--          @click="handleDelete"-->
-<!--          v-hasPermi="['fac:temper:remove']"-->
-<!--        >删除</el-button>-->
-<!--      </el-col>-->
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['fac:temper:add']"
+        >新增</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+          v-hasPermi="['fac:temper:edit']"
+        >修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+          v-hasPermi="['fac:temper:remove']"
+        >删除</el-button>
+      </el-col>
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -137,39 +152,42 @@
     <el-table v-loading="loading" :data="temperList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="编号" align="center" prop="temperId" />
-      <el-table-column label="温度值1" align="center" prop="temp1" />
-      <el-table-column label="温度值2" align="center" prop="temp2" />
-      <el-table-column label="温度值3" align="center" prop="temp3" />
-      <el-table-column label="温度值4" align="center" prop="temp4" />
+      <el-table-column label="温度值" align="center" prop="temp" />
       <el-table-column label="采集的时间" align="center" prop="acquisitionTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属车间的名称" align="center" prop="workshopName" />
+      <el-table-column label="终端设备的编号" align="center" prop="deviceId" />
+      <el-table-column label="终端设备的名称" align="center" prop="deviceName" />
+      <el-table-column label="热电偶的编号" align="center" prop="thermocoupleId" />
+      <el-table-column label="热电偶的名称" align="center" prop="thermocoupleName" />
+      <el-table-column label="所属电解槽的编号" align="center" prop="electrolyticCellId" />
       <el-table-column label="所属电解槽的名称" align="center" prop="electrolyticCellName" />
-      <el-table-column label="采集设备的名称" align="center" prop="deviceName" />
+      <el-table-column label="所属车间的编号" align="center" prop="workshopId" />
+      <el-table-column label="所属车间的名称" align="center" prop="workshopName" />
+      <el-table-column label="所属工厂的编号" align="center" prop="factoryId" />
       <el-table-column label="所属工厂的名称" align="center" prop="factoryName" />
-<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-edit"-->
-<!--            @click="handleUpdate(scope.row)"-->
-<!--            v-hasPermi="['fac:temper:edit']"-->
-<!--          >修改</el-button>-->
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-delete"-->
-<!--            @click="handleDelete(scope.row)"-->
-<!--            v-hasPermi="['fac:temper:remove']"-->
-<!--          >删除</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['fac:temper:edit']"
+          >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['fac:temper:remove']"
+          >删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-
+    
     <pagination
       v-show="total>0"
       :total="total"
@@ -178,46 +196,43 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改温度采集对话框 -->
+    <!-- 添加或修改温度管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="温度值1" prop="temp1">
-          <el-input v-model="form.temp1" placeholder="请输入温度值1" />
+        <el-form-item label="温度值" prop="temp">
+          <el-input v-model="form.temp" placeholder="请输入温度值" />
         </el-form-item>
-        <el-form-item label="温度值2" prop="temp2">
-          <el-input v-model="form.temp2" placeholder="请输入温度值2" />
+        <el-form-item label="采集的时间" prop="acquisitionTime">
+          <el-date-picker clearable
+            v-model="form.acquisitionTime"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择采集的时间">
+          </el-date-picker>
         </el-form-item>
-        <el-form-item label="温度值3" prop="temp3">
-          <el-input v-model="form.temp3" placeholder="请输入温度值3" />
+        <el-form-item label="终端设备的编号" prop="deviceId">
+          <el-input v-model="form.deviceId" placeholder="请输入终端设备的编号" />
         </el-form-item>
-        <el-form-item label="温度值4" prop="temp4">
-          <el-input v-model="form.temp4" placeholder="请输入温度值4" />
+        <el-form-item label="终端设备的名称" prop="deviceName">
+          <el-input v-model="form.deviceName" placeholder="请输入终端设备的名称" />
         </el-form-item>
-<!--        <el-form-item label="采集的时间" prop="acquisitionTime">-->
-<!--          <el-date-picker clearable-->
-<!--            v-model="form.acquisitionTime"-->
-<!--            type="date"-->
-<!--            value-format="yyyy-MM-dd"-->
-<!--            placeholder="请选择采集的时间">-->
-<!--          </el-date-picker>-->
-<!--        </el-form-item>-->
-        <el-form-item label="采集设备的编号" prop="deviceId">
-          <el-input v-model="form.deviceId" placeholder="请输入采集设备的编号" />
+        <el-form-item label="热电偶的编号" prop="thermocoupleId">
+          <el-input v-model="form.thermocoupleId" placeholder="请输入热电偶的编号" />
+        </el-form-item>
+        <el-form-item label="热电偶的名称" prop="thermocoupleName">
+          <el-input v-model="form.thermocoupleName" placeholder="请输入热电偶的名称" />
         </el-form-item>
         <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">
           <el-input v-model="form.electrolyticCellId" placeholder="请输入所属电解槽的编号" />
+        </el-form-item>
+        <el-form-item label="所属电解槽的名称" prop="electrolyticCellName">
+          <el-input v-model="form.electrolyticCellName" placeholder="请输入所属电解槽的名称" />
         </el-form-item>
         <el-form-item label="所属车间的编号" prop="workshopId">
           <el-input v-model="form.workshopId" placeholder="请输入所属车间的编号" />
         </el-form-item>
         <el-form-item label="所属车间的名称" prop="workshopName">
           <el-input v-model="form.workshopName" placeholder="请输入所属车间的名称" />
-        </el-form-item>
-        <el-form-item label="所属电解槽的名称" prop="electrolyticCellName">
-          <el-input v-model="form.electrolyticCellName" placeholder="请输入所属电解槽的名称" />
-        </el-form-item>
-        <el-form-item label="采集设备的名称" prop="deviceName">
-          <el-input v-model="form.deviceName" placeholder="请输入采集设备的名称" />
         </el-form-item>
         <el-form-item label="所属工厂的编号" prop="factoryId">
           <el-input v-model="form.factoryId" placeholder="请输入所属工厂的编号" />
@@ -253,30 +268,27 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 温度采集表格数据
+      // 温度管理表格数据
       temperList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
-      // 所属工厂的名称时间范围
-      daterangeAcquisitionTime: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        beginTemp1: null,
-        endTemp1:null,
-        beginTemp2:null,
-        endTemp2: null,
-        beginTemp3: null,
-        endTemp3:null,
-        beginTemp4: null,
-        endTemp4:null,
+        temp: null,
         acquisitionTime: null,
-        workshopName: null,
-        electrolyticCellName: null,
+        deviceId: null,
         deviceName: null,
+        thermocoupleId: null,
+        thermocoupleName: null,
+        electrolyticCellId: null,
+        electrolyticCellName: null,
+        workshopId: null,
+        workshopName: null,
+        factoryId: null,
         factoryName: null
       },
       // 表单参数
@@ -290,14 +302,9 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询温度采集列表 */
+    /** 查询温度管理列表 */
     getList() {
       this.loading = true;
-      this.queryParams.params = {};
-      if (null != this.daterangeAcquisitionTime && '' != this.daterangeAcquisitionTime) {
-        this.queryParams.params["beginAcquisitionTime"] = this.daterangeAcquisitionTime[0];
-        this.queryParams.params["endAcquisitionTime"] = this.daterangeAcquisitionTime[1];
-      }
       listTemper(this.queryParams).then(response => {
         this.temperList = response.rows;
         this.total = response.total;
@@ -313,17 +320,16 @@ export default {
     reset() {
       this.form = {
         temperId: null,
-        temp1: null,
-        temp2: null,
-        temp3: null,
-        temp4: null,
+        temp: null,
         acquisitionTime: null,
         deviceId: null,
+        deviceName: null,
+        thermocoupleId: null,
+        thermocoupleName: null,
         electrolyticCellId: null,
+        electrolyticCellName: null,
         workshopId: null,
         workshopName: null,
-        electrolyticCellName: null,
-        deviceName: null,
         factoryId: null,
         factoryName: null
       };
@@ -336,7 +342,6 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.daterangeAcquisitionTime = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
@@ -350,7 +355,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加温度采集";
+      this.title = "添加温度管理";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -359,7 +364,7 @@ export default {
       getTemper(temperId).then(response => {
         this.form = response.data;
         this.open = true;
-        this.title = "修改温度采集";
+        this.title = "修改温度管理";
       });
     },
     /** 提交按钮 */
@@ -385,7 +390,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const temperIds = row.temperId || this.ids;
-      this.$modal.confirm('是否确认删除温度采集编号为"' + temperIds + '"的数据项？').then(function() {
+      this.$modal.confirm('是否确认删除温度管理编号为"' + temperIds + '"的数据项？').then(function() {
         return delTemper(temperIds);
       }).then(() => {
         this.getList();

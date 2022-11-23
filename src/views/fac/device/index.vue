@@ -25,6 +25,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="设备状态" prop="deviceStatus">
+        <el-select v-model="queryParams.deviceStatus" placeholder="请选择设备状态" clearable>
+          <el-option
+            v-for="dict in dict.type.fac_device_state"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -83,6 +93,11 @@
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="设备所在电解槽的位置" align="center" prop="location" />
       <el-table-column label="设备所属的电解槽的编号" align="center" prop="electrolyticellId" />
+      <el-table-column label="设备状态" align="center" prop="deviceStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.fac_device_state" :value="scope.row.deviceStatus"/>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -115,7 +130,7 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="设备编号" prop="deviceId">
-          <el-input v-model="form.deviceId" placeholder="请输入设备编号"  :disabled="isEdit"/>
+          <el-input v-model="form.deviceId" placeholder="请输入设备编号" />
         </el-form-item>
         <el-form-item label="设备名称" prop="deviceName">
           <el-input v-model="form.deviceName" placeholder="请输入设备名称" />
@@ -126,6 +141,38 @@
         <el-form-item label="设备所属的电解槽的编号" prop="electrolyticellId">
           <el-input v-model="form.electrolyticellId" placeholder="请输入设备所属的电解槽的编号" />
         </el-form-item>
+        <el-form-item label="设备状态">
+          <el-radio-group v-model="form.deviceStatus">
+            <el-radio
+              v-for="dict in dict.type.fac_device_state"
+              :key="dict.value"
+              :label="dict.value"
+            >{{dict.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-divider content-position="center">热电偶信息</el-divider>
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleAddFacThermocouple">添加</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDeleteFacThermocouple">删除</el-button>
+          </el-col>
+        </el-row>
+        <el-table :data="facThermocoupleList" :row-class-name="rowFacThermocoupleIndex" @selection-change="handleFacThermocoupleSelectionChange" ref="facThermocouple">
+          <el-table-column type="selection" width="50" align="center" />
+          <el-table-column label="序号" align="center" prop="index" width="50"/>
+          <el-table-column label="热点偶名称" prop="thermocoupleName" width="150">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.thermocoupleName" placeholder="请输入热点偶名称" />
+            </template>
+          </el-table-column>
+          <el-table-column label="热点偶所在的位置" prop="thermocoupleLocation" width="150">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.thermocoupleLocation" placeholder="请输入热点偶所在的位置" />
+            </template>
+          </el-table-column>
+        </el-table>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -140,12 +187,15 @@ import { listDevice, getDevice, delDevice, addDevice, updateDevice } from "@/api
 
 export default {
   name: "Device",
+  dicts: ['fac_device_state'],
   data() {
     return {
       // 遮罩层
       loading: true,
       // 选中数组
       ids: [],
+      // 子表选中数据
+      checkedFacThermocouple: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -156,6 +206,8 @@ export default {
       total: 0,
       // 设备管理表格数据
       deviceList: [],
+      // 热电偶表格数据
+      facThermocoupleList: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
@@ -166,13 +218,15 @@ export default {
         pageSize: 10,
         deviceName: null,
         location: null,
-        electrolyticellId: null
+        electrolyticellId: null,
+        deviceStatus: null
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {},
-      isEdit:true
+      rules: {
+      },
+      isEdit:false
     };
   },
   created() {
@@ -199,8 +253,10 @@ export default {
         deviceId: null,
         deviceName: null,
         location: null,
-        electrolyticellId: null
+        electrolyticellId: null,
+        deviceStatus: "0"
       };
+      this.facThermocoupleList = [];
       this.resetForm("form");
     },
     /** 搜索按钮操作 */
@@ -224,7 +280,7 @@ export default {
       this.reset();
       this.open = true;
       this.title = "添加设备管理";
-      this.isEdit=false;
+      this.isEdit=false
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
@@ -232,15 +288,17 @@ export default {
       const deviceId = row.deviceId || this.ids
       getDevice(deviceId).then(response => {
         this.form = response.data;
+        this.facThermocoupleList = response.data.facThermocoupleList;
         this.open = true;
         this.title = "修改设备管理";
-        this.isEdit=true;
+        this.isEdit=true
       });
     },
     /** 提交按钮 */
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.form.facThermocoupleList = this.facThermocoupleList;
           if (this.isEdit) {
             updateDevice(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
@@ -266,6 +324,33 @@ export default {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
+    },
+    /** 热电偶序号 */
+    rowFacThermocoupleIndex({ row, rowIndex }) {
+      row.index = rowIndex + 1;
+    },
+    /** 热电偶添加按钮操作 */
+    handleAddFacThermocouple() {
+      let obj = {};
+      obj.thermocoupleName = "";
+      obj.thermocoupleLocation = "";
+      this.facThermocoupleList.push(obj);
+    },
+    /** 热电偶删除按钮操作 */
+    handleDeleteFacThermocouple() {
+      if (this.checkedFacThermocouple.length == 0) {
+        this.$modal.msgError("请先选择要删除的热电偶数据");
+      } else {
+        const facThermocoupleList = this.facThermocoupleList;
+        const checkedFacThermocouple = this.checkedFacThermocouple;
+        this.facThermocoupleList = facThermocoupleList.filter(function(item) {
+          return checkedFacThermocouple.indexOf(item.index) == -1
+        });
+      }
+    },
+    /** 复选框选中数据 */
+    handleFacThermocoupleSelectionChange(selection) {
+      this.checkedFacThermocouple = selection.map(item => item.index)
     },
     /** 导出按钮操作 */
     handleExport() {

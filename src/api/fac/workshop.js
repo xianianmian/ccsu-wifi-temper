@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-// 查询车间管理列表
+// 查询生产车间列表
 export function listWorkshop(query) {
   return request({
     url: '/fac/workshop/list',
@@ -9,7 +9,7 @@ export function listWorkshop(query) {
   })
 }
 
-// 查询车间管理详细
+// 查询生产车间详细
 export function getWorkshop(workshopId) {
   return request({
     url: '/fac/workshop/' + workshopId,
@@ -17,7 +17,7 @@ export function getWorkshop(workshopId) {
   })
 }
 
-// 新增车间管理
+// 新增生产车间
 export function addWorkshop(data) {
   return request({
     url: '/fac/workshop',
@@ -26,7 +26,7 @@ export function addWorkshop(data) {
   })
 }
 
-// 修改车间管理
+// 修改生产车间
 export function updateWorkshop(data) {
   return request({
     url: '/fac/workshop',
@@ -35,7 +35,7 @@ export function updateWorkshop(data) {
   })
 }
 
-// 删除车间管理
+// 删除生产车间
 export function delWorkshop(workshopId) {
   return request({
     url: '/fac/workshop/' + workshopId,

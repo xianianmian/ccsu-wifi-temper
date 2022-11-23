@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="150px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="电解槽名称" prop="electrolyticcellName">
         <el-input
           v-model="queryParams.electrolyticcellName"
@@ -17,10 +17,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="车间编号" prop="workshopId">
+      <el-form-item label="车间编号，外键" prop="workshopId">
         <el-input
           v-model="queryParams.workshopId"
-          placeholder="请输入车间编号"
+          placeholder="请输入车间编号，外键"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -102,7 +102,7 @@
         </template>
       </el-table-column>
     </el-table>
-
+    
     <pagination
       v-show="total>0"
       :total="total"
@@ -143,6 +143,13 @@
           <el-table-column label="设备所在电解槽的位置" prop="location" width="150">
             <template slot-scope="scope">
               <el-input v-model="scope.row.location" placeholder="请输入设备所在电解槽的位置" />
+            </template>
+          </el-table-column>
+          <el-table-column label="设备状态" prop="deviceStatus" width="150">
+            <template slot-scope="scope">
+              <el-select v-model="scope.row.deviceStatus" placeholder="请选择设备状态">
+                <el-option label="请选择字典生成" value="" />
+              </el-select>
             </template>
           </el-table-column>
         </el-table>
@@ -301,6 +308,7 @@ export default {
       let obj = {};
       obj.deviceName = "";
       obj.location = "";
+      obj.deviceStatus = "";
       this.facEndDeviceList.push(obj);
     },
     /** 设备管理删除按钮操作 */
