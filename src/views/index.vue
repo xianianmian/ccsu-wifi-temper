@@ -2,7 +2,7 @@
   <div class="dashboard-editor-container">
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="8">
-       zigbee 终端 断网 电池监测 （支持查询）
+        zigbee 终端 断网 电池监测 （支持查询）
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
        <span>电解槽在线数量</span>
