@@ -1,12 +1,14 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="120px">
       <el-form-item label="故障发生的时间" prop="happenTime">
         <el-date-picker clearable
-          v-model="queryParams.happenTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择故障发生的时间">
+                        v-model="queryParams.happenTime"
+                        type="datetimerange"
+                        range-separator="至"
+                        start-placeholder="故障开始日期"
+                        end-placeholder="故障截止日期"
+        >
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -24,7 +26,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['fac:cellError:add']"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -35,7 +38,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['fac:cellError:edit']"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -46,7 +50,8 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['fac:cellError:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -56,23 +61,24 @@
           size="mini"
           @click="handleExport"
           v-hasPermi="['fac:cellError:export']"
-        >导出</el-button>
+        >导出
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="cellErrorList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column label="编号" align="center" prop="id"/>
       <el-table-column label="故障发生的时间" align="center" prop="happenTime" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.happenTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属电解槽的名称" align="center" prop="electrolyticCellName" />
-      <el-table-column label="故障电解槽的位置" align="center" prop="electrolyticCellLocation" />
-      <el-table-column label="所属车间的名称" align="center" prop="workshopName" />
-      <el-table-column label="所属工厂的名称" align="center" prop="factoryName" />
+      <el-table-column label="所属电解槽的名称" align="center" prop="electrolyticCellName"/>
+      <el-table-column label="故障电解槽的位置" align="center" prop="electrolyticCellLocation"/>
+      <el-table-column label="所属车间的名称" align="center" prop="workshopName"/>
+      <el-table-column label="所属工厂的名称" align="center" prop="factoryName"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -81,18 +87,20 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['fac:cellError:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['fac:cellError:remove']"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -106,32 +114,33 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="故障发生的时间" prop="happenTime">
           <el-date-picker clearable
-            v-model="form.happenTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择故障发生的时间">
+                          v-model="form.happenTime"
+                          type="date"
+                          value-format="yyyy-MM-dd"
+                          placeholder="请选择故障发生的时间"
+          >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">
-          <el-input v-model="form.electrolyticCellId" placeholder="请输入所属电解槽的编号" />
+          <el-input v-model="form.electrolyticCellId" placeholder="请输入所属电解槽的编号"/>
         </el-form-item>
         <el-form-item label="所属电解槽的名称" prop="electrolyticCellName">
-          <el-input v-model="form.electrolyticCellName" placeholder="请输入所属电解槽的名称" />
+          <el-input v-model="form.electrolyticCellName" placeholder="请输入所属电解槽的名称"/>
         </el-form-item>
         <el-form-item label="故障电解槽的位置" prop="electrolyticCellLocation">
-          <el-input v-model="form.electrolyticCellLocation" placeholder="请输入故障电解槽的位置" />
+          <el-input v-model="form.electrolyticCellLocation" placeholder="请输入故障电解槽的位置"/>
         </el-form-item>
         <el-form-item label="所属车间的编号" prop="workshopId">
-          <el-input v-model="form.workshopId" placeholder="请输入所属车间的编号" />
+          <el-input v-model="form.workshopId" placeholder="请输入所属车间的编号"/>
         </el-form-item>
         <el-form-item label="所属车间的名称" prop="workshopName">
-          <el-input v-model="form.workshopName" placeholder="请输入所属车间的名称" />
+          <el-input v-model="form.workshopName" placeholder="请输入所属车间的名称"/>
         </el-form-item>
         <el-form-item label="所属工厂的编号" prop="factoryId">
-          <el-input v-model="form.factoryId" placeholder="请输入所属工厂的编号" />
+          <el-input v-model="form.factoryId" placeholder="请输入所属工厂的编号"/>
         </el-form-item>
         <el-form-item label="所属工厂的名称" prop="factoryName">
-          <el-input v-model="form.factoryName" placeholder="请输入所属工厂的名称" />
+          <el-input v-model="form.factoryName" placeholder="请输入所属工厂的名称"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -143,10 +152,10 @@
 </template>
 
 <script>
-import { listCellError, getCellError, delCellError, addCellError, updateCellError } from "@/api/fac/cellError";
+import { listCellError, getCellError, delCellError, addCellError, updateCellError } from '@/api/fac/cellError'
 
 export default {
-  name: "CellError",
+  name: 'CellError',
   data() {
     return {
       // 遮罩层
@@ -164,39 +173,38 @@ export default {
       // 电解槽故障表格数据
       cellErrorList: [],
       // 弹出层标题
-      title: "",
+      title: '',
       // 是否显示弹出层
       open: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        happenTime: null,
+        happenTime: null
       },
       // 表单参数
       form: {},
       // 表单校验
-      rules: {
-      }
-    };
+      rules: {}
+    }
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     /** 查询电解槽故障列表 */
     getList() {
-      this.loading = true;
+      this.loading = true
       listCellError(this.queryParams).then(response => {
-        this.cellErrorList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
+        this.cellErrorList = response.rows
+        this.total = response.total
+        this.loading = false
+      })
     },
     // 取消按钮
     cancel() {
-      this.open = false;
-      this.reset();
+      this.open = false
+      this.reset()
     },
     // 表单重置
     reset() {
@@ -210,70 +218,71 @@ export default {
         workshopName: null,
         factoryId: null,
         factoryName: null
-      };
-      this.resetForm("form");
+      }
+      this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.queryParams.pageNum = 1;
-      this.getList();
+      this.queryParams.pageNum = 1
+      this.getList()
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.resetForm("queryForm");
-      this.handleQuery();
+      this.resetForm('queryForm')
+      this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
     handleAdd() {
-      this.reset();
-      this.open = true;
-      this.title = "添加电解槽故障";
+      this.reset()
+      this.open = true
+      this.title = '添加电解槽故障'
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      this.reset();
+      this.reset()
       const id = row.id || this.ids
       getCellError(id).then(response => {
-        this.form = response.data;
-        this.open = true;
-        this.title = "修改电解槽故障";
-      });
+        this.form = response.data
+        this.open = true
+        this.title = '修改电解槽故障'
+      })
     },
     /** 提交按钮 */
     submitForm() {
-      this.$refs["form"].validate(valid => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != null) {
             updateCellError(this.form).then(response => {
-              this.$modal.msgSuccess("修改成功");
-              this.open = false;
-              this.getList();
-            });
+              this.$modal.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            })
           } else {
             addCellError(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
-            });
+              this.$modal.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            })
           }
         }
-      });
+      })
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const ids = row.id || this.ids;
+      const ids = row.id || this.ids
       this.$modal.confirm('是否确认删除电解槽故障编号为"' + ids + '"的数据项？').then(function() {
-        return delCellError(ids);
+        return delCellError(ids)
       }).then(() => {
-        this.getList();
-        this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+        this.getList()
+        this.$modal.msgSuccess('删除成功')
+      }).catch(() => {
+      })
     },
     /** 导出按钮操作 */
     handleExport() {
@@ -282,5 +291,5 @@ export default {
       }, `cellError_${new Date().getTime()}.xlsx`)
     }
   }
-};
+}
 </script>

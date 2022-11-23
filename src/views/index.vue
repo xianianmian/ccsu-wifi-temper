@@ -35,16 +35,15 @@
     </el-row>
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="8">
+
+
         zigbee终端状态实时分页展示（支持查询）
-        <div class="chart-wrapper">
-          <state-form/>
-        </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         温度实时曲线展示（支持查询，以电解槽或zigbee为单位）
-        <div class="chart-wrapper">
-          <dy-line-chart chartTitle="zigbee2" :chart-data="lineChartData"/>
-        </div>
+          <div class="chart-wrapper">
+            <dy-line-chart chartTitle="zigbee2" :chart-data="lineChartData"/>
+          </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
         温度数据实时分页展示（支持查询）

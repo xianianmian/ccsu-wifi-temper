@@ -39,7 +39,9 @@ import VueMeta from 'vue-meta'
 import DictData from '@/components/DictData'
 //mqtt连接
 import mqttCon from "./utils/mqttCon";
-
+//data-view 数据大屏组件
+import dataV  from '@jiaminghi/data-view'
+Vue.use(dataV)
 // 全局方法挂载
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
