@@ -3,6 +3,7 @@
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="24">
         <div style="margin: 10px">
+          <span>车间选择：</span>
           <el-radio-group v-model="workshopSelected" size="mini">
             <el-radio-button label="车间1"></el-radio-button>
             <el-radio-button label="车间2"></el-radio-button>
@@ -181,7 +182,7 @@ export default {
 
 <style lang="scss" scoped>
 .dashboard-editor-container {
-  padding: 32px;
+  padding: 12px 32px;
   background-color: rgb(240, 242, 245);
   position: relative;
 
