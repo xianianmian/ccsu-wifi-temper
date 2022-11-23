@@ -2,21 +2,21 @@
   <div class="dashboard-editor-container">
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="8">
-<!--        zigbee 终端 断网 电池监测 （支持查询）-->
+       zigbee 终端 断网 电池监测 （支持查询）
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-        电解槽在线数量
+       <span>电解槽在线数量</span>
         <div class="central_text chart-wrapper">
           <span class="central_text_top">{{dateTime}}</span>
           <div class="central_text_center">
             <div style="font-size:20px;color:#7a9064;margin-bottom: 10px;">电解槽总运行数量</div>
             <div style="color:#5dbec8;font-size: 20px;"><span style="font-size:45px;">12</span>个</div>
-            <div style="color:#7a9064;font-size:20px">安全运行率100%</div>
+            <div style="color:#7a9064;font-size:20px">安全运行率：100%</div>
           </div>
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-        运行状况
+        <span>运行状况</span>
         <div class="chart-wrapper">
           <pie-chart :chart-data="pieChartData"/>
         </div>
