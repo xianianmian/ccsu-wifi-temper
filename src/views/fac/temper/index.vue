@@ -49,6 +49,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="热点偶的位置" prop="thermocoupleLocation">
+        <el-input
+          v-model="queryParams.thermocoupleLocation"
+          placeholder="请输入热点偶的位置"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">
         <el-input
           v-model="queryParams.electrolyticCellId"
@@ -151,17 +159,18 @@
 
     <el-table v-loading="loading" :data="temperList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="编号" align="center" prop="temperId" />
-      <el-table-column label="温度值" align="center" prop="temp" />
+<!--      <el-table-column label="编号" align="center" prop="temperId" />-->
       <el-table-column label="采集的时间" align="center" prop="acquisitionTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="终端设备的编号" align="center" prop="deviceId" />
+      <el-table-column label="温度值" align="center" prop="temp" />
+      <!--      <el-table-column label="终端设备的编号" align="center" prop="deviceId" />-->
       <el-table-column label="终端设备的名称" align="center" prop="deviceName" />
-      <el-table-column label="热电偶的编号" align="center" prop="thermocoupleId" />
+<!--      <el-table-column label="热电偶的编号" align="center" prop="thermocoupleId" />-->
       <el-table-column label="热电偶的名称" align="center" prop="thermocoupleName" />
+      <el-table-column label="热点偶的位置" align="center" prop="thermocoupleLocation" />
       <el-table-column label="所属电解槽的编号" align="center" prop="electrolyticCellId" />
       <el-table-column label="所属电解槽的名称" align="center" prop="electrolyticCellName" />
       <el-table-column label="所属车间的编号" align="center" prop="workshopId" />
@@ -187,7 +196,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -221,6 +230,9 @@
         </el-form-item>
         <el-form-item label="热电偶的名称" prop="thermocoupleName">
           <el-input v-model="form.thermocoupleName" placeholder="请输入热电偶的名称" />
+        </el-form-item>
+        <el-form-item label="热点偶的位置" prop="thermocoupleLocation">
+          <el-input v-model="form.thermocoupleLocation" placeholder="请输入热点偶的位置" />
         </el-form-item>
         <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">
           <el-input v-model="form.electrolyticCellId" placeholder="请输入所属电解槽的编号" />
@@ -284,6 +296,7 @@ export default {
         deviceName: null,
         thermocoupleId: null,
         thermocoupleName: null,
+        thermocoupleLocation: null,
         electrolyticCellId: null,
         electrolyticCellName: null,
         workshopId: null,
@@ -326,6 +339,7 @@ export default {
         deviceName: null,
         thermocoupleId: null,
         thermocoupleName: null,
+        thermocoupleLocation: null,
         electrolyticCellId: null,
         electrolyticCellName: null,
         workshopId: null,
