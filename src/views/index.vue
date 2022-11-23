@@ -1,10 +1,11 @@
 <template>
   <div class="dashboard-editor-container">
-    <el-row :gutter="32">
+    <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="8">
 <!--        zigbee 终端 断网 电池监测 （支持查询）-->
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
+        电解槽在线数量
         <div class="central_text chart-wrapper">
           <span class="central_text_top">{{dateTime}}</span>
           <div class="central_text_center">
@@ -15,12 +16,13 @@
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
+        运行状况
         <div class="chart-wrapper">
           <pie-chart :chart-data="pieChartData"/>
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="32">
+    <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="8">
 <!--        zigbee终端状态实时分页展示（支持查询）-->
         <div class="chart-wrapper">
