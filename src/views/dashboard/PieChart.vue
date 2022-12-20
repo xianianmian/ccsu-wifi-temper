@@ -1,54 +1,70 @@
 <template>
   <div class="container">
-    <div class="container-left">
-      <el-card style="color: #2ec7c9">
-        <span>正常电解槽运行数量</span>
-        <div class="left1-main">
-          <div class="radius" style="background-color: #2ec7c9"></div>
-          <div>
-            <span>100个</span>
-            <br />
-            <span>占比:100%</span>
+    <div class="main">
+      <div class="main-left">
+        <el-card style="color: #2ec7c9">
+          <span>正常电解槽运行数量</span>
+          <div class="left1-main">
+            <div class="radius" style="background-color: #2ec7c9"></div>
+            <div>
+              <span>100个</span>
+              <br />
+              <span>占比:100%</span>
+            </div>
           </div>
-        </div>
-      </el-card>
-      <el-card style="color: rgb(200, 178, 244)">
-        <span>预警电解槽运行数量</span>
-        <div class="left1-main">
-          <div
-            class="radius"
-            style="background-color: rgb(200, 178, 244)"
-          ></div>
-          <div>
-            <span>100个</span>
-            <br />
-            <span>占比:100%</span>
+        </el-card>
+        <el-card style="color: rgb(200, 178, 244)">
+          <span>预警电解槽运行数量</span>
+          <div class="left1-main">
+            <div
+              class="radius"
+              style="background-color: rgb(200, 178, 244)"
+            ></div>
+            <div>
+              <span>100个</span>
+              <br />
+              <span>占比:100%</span>
+            </div>
           </div>
-        </div>
-      </el-card>
-      <el-card style="color: rgb(90, 177, 239)">
-        <span> 故障电解槽运行数量</span>
-        <div class="left1-main">
-          <div class="radius" style="background-color: rgb(90, 177, 239)"></div>
-          <div>
-            <span>100个</span>
-            <br />
-            <span>占比:100%</span>
+        </el-card>
+        <el-card style="color: rgb(90, 177, 239)">
+          <span> 故障电解槽运行数量</span>
+          <div class="left1-main">
+            <div
+              class="radius"
+              style="background-color: rgb(90, 177, 239)"
+            ></div>
+            <div>
+              <span>100个</span>
+              <br />
+              <span>占比:100%</span>
+            </div>
           </div>
-        </div>
-      </el-card>
-    </div>
-    <div class="container-right">
-      <span style="font-size:10px">数据每5分钟更新</span>
-      <div
-        :class="className"
-        :style="{ height: height, width: width, marginbottom: marginbottom }"
-      />
-      <div style="display: flex; justify-content: space-between">
-        <img src="@/assets/logo/search.png" alt="" />
-        <el-input placeholder="故障记录查询"></el-input>
-        <el-button type="primary" @click="find">查询</el-button>
+        </el-card>
       </div>
+      <div class="main-right">
+        <span style="font-size: 10px">数据每5分钟更新</span>
+        <div
+          :class="className"
+          :style="{ height: height, width: width, marginbottom: marginbottom }"
+        />
+        <div style="display: flex; justify-content: space-between">
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <img src="@/assets/logo/search.png" alt="" />
+      <el-date-picker
+        v-model="value2"
+        type="datetimerange"
+        range-separator="至"
+        start-placeholder="故障开始日期"
+        end-placeholder="故障结束日期"
+        align="right"
+        size="mini"
+        @change="find"
+      >
+      </el-date-picker>
     </div>
   </div>
 </template>
@@ -90,6 +106,8 @@ export default {
   data() {
     return {
       chart: null,
+      // 设置查询故障时间的默认值
+      value2: "",
     };
   },
   mounted() {
@@ -105,8 +123,9 @@ export default {
     this.chart = null;
   },
   methods: {
-    find(){
-      this.$router.push('/fac/cellError');
+    find() {
+      if(this.value2!=""&&this.value2!=null)
+      this.$router.push("/fac/cellError");
     },
     initChart() {
       this.chart = echarts.init(
@@ -141,22 +160,26 @@ export default {
 }
 .container {
   display: flex;
+  flex-direction: column;
   color: #7a97a5;
   justify-content: space-between;
 }
-.container-left {
+.main{
+  display: flex;
+}
+.main-left {
   width: 143px;
   height: 100%;
   font-size: 13px;
   display: flex;
   flex-direction: column;
-  margin: 31px 7px;
+  margin: 15px 7px;
 }
 .left1-main {
   display: flex;
 }
 .el-card.is-always-shadow {
-  margin-bottom: 17px;
+  margin-bottom: 4px;
 }
 /deep/.el-card__body {
   padding: 5px;
@@ -167,21 +190,19 @@ export default {
   border-radius: 15px;
   margin-top: 16px;
 }
-.container-right {
+.main-right {
   display: flex;
   flex-direction: column;
   width: 220px;
   height: 100%;
 }
-.el-input {
-  width: 138px;
-}
-.el-button--medium{
-  width: 45px;
+.footer{
+  display: flex;
+  margin: 21px 0;
 }
 img {
   width: 24px;
-  height: 30px;
+  height: 18px;
   margin: 2px;
 }
 </style>
