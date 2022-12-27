@@ -49,8 +49,7 @@ export default {
   watch: {},
   mounted() {
     // this.timer = window.setInterval(() => {}, 2000);
-    this.mqttSubscribe() //订阅
-    // console.log("dayjs :>> ", this.dayjs().format("YYYY-MM-DD HH:mm:ss"));
+    // this.mqttSubscribe() //订阅
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="120px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="温度值" prop="temp">
         <el-input
           v-model="queryParams.temp"
@@ -17,14 +17,38 @@
           placeholder="请选择采集的时间">
         </el-date-picker>
       </el-form-item>
-<!--      <el-form-item label="终端设备的编号" prop="deviceId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.deviceId"-->
-<!--          placeholder="请输入终端设备的编号"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="所属热电偶的编号" prop="thermocoupleId">
+        <el-input
+          v-model="queryParams.thermocoupleId"
+          placeholder="请输入所属热电偶的编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="所属热电偶的名称" prop="thermocoupleName">
+        <el-input
+          v-model="queryParams.thermocoupleName"
+          placeholder="请输入所属热电偶的名称"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="所属热电偶的位置" prop="thermocoupleLocation">
+        <el-input
+          v-model="queryParams.thermocoupleLocation"
+          placeholder="请输入所属热电偶的位置"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="终端设备的编号" prop="deviceId">
+        <el-input
+          v-model="queryParams.deviceId"
+          placeholder="请输入终端设备的编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="终端设备的名称" prop="deviceName">
         <el-input
           v-model="queryParams.deviceName"
@@ -33,38 +57,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<!--      <el-form-item label="热电偶的编号" prop="thermocoupleId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.thermocoupleId"-->
-<!--          placeholder="请输入热电偶的编号"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
-      <el-form-item label="热电偶的名称" prop="thermocoupleName">
+      <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">
         <el-input
-          v-model="queryParams.thermocoupleName"
-          placeholder="请输入热电偶的名称"
+          v-model="queryParams.electrolyticCellId"
+          placeholder="请输入所属电解槽的编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="热点偶的位置" prop="thermocoupleLocation">
-        <el-input
-          v-model="queryParams.thermocoupleLocation"
-          placeholder="请输入热点偶的位置"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-<!--      <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.electrolyticCellId"-->
-<!--          placeholder="请输入所属电解槽的编号"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
       <el-form-item label="所属电解槽的名称" prop="electrolyticCellName">
         <el-input
           v-model="queryParams.electrolyticCellName"
@@ -73,14 +73,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<!--      <el-form-item label="所属车间的编号" prop="workshopId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.workshopId"-->
-<!--          placeholder="请输入所属车间的编号"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="所属车间的编号" prop="workshopId">
+        <el-input
+          v-model="queryParams.workshopId"
+          placeholder="请输入所属车间的编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="所属车间的名称" prop="workshopName">
         <el-input
           v-model="queryParams.workshopName"
@@ -89,14 +89,14 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-<!--      <el-form-item label="所属工厂的编号" prop="factoryId">-->
-<!--        <el-input-->
-<!--          v-model="queryParams.factoryId"-->
-<!--          placeholder="请输入所属工厂的编号"-->
-<!--          clearable-->
-<!--          @keyup.enter.native="handleQuery"-->
-<!--        />-->
-<!--      </el-form-item>-->
+      <el-form-item label="所属工厂的编号" prop="factoryId">
+        <el-input
+          v-model="queryParams.factoryId"
+          placeholder="请输入所属工厂的编号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="所属工厂的名称" prop="factoryName">
         <el-input
           v-model="queryParams.factoryName"
@@ -112,38 +112,38 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="primary"-->
-<!--          plain-->
-<!--          icon="el-icon-plus"-->
-<!--          size="mini"-->
-<!--          @click="handleAdd"-->
-<!--          v-hasPermi="['fac:temper:add']"-->
-<!--        >新增</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="success"-->
-<!--          plain-->
-<!--          icon="el-icon-edit"-->
-<!--          size="mini"-->
-<!--          :disabled="single"-->
-<!--          @click="handleUpdate"-->
-<!--          v-hasPermi="['fac:temper:edit']"-->
-<!--        >修改</el-button>-->
-<!--      </el-col>-->
-<!--      <el-col :span="1.5">-->
-<!--        <el-button-->
-<!--          type="danger"-->
-<!--          plain-->
-<!--          icon="el-icon-delete"-->
-<!--          size="mini"-->
-<!--          :disabled="multiple"-->
-<!--          @click="handleDelete"-->
-<!--          v-hasPermi="['fac:temper:remove']"-->
-<!--        >删除</el-button>-->
-<!--      </el-col>-->
+      <el-col :span="1.5">
+        <el-button
+          type="primary"
+          plain
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleAdd"
+          v-hasPermi="['fac:temper:add']"
+        >新增</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="single"
+          @click="handleUpdate"
+          v-hasPermi="['fac:temper:edit']"
+        >修改</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          icon="el-icon-delete"
+          size="mini"
+          :disabled="multiple"
+          @click="handleDelete"
+          v-hasPermi="['fac:temper:remove']"
+        >删除</el-button>
+      </el-col>
       <el-col :span="1.5">
         <el-button
           type="warning"
@@ -159,44 +159,44 @@
 
     <el-table v-loading="loading" :data="temperList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-<!--      <el-table-column label="编号" align="center" prop="temperId" />-->
+      <el-table-column label="编号" align="center" prop="temperId" />
+      <el-table-column label="温度值" align="center" prop="temp" />
       <el-table-column label="采集的时间" align="center" prop="acquisitionTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="温度值" align="center" prop="temp" />
-      <!--      <el-table-column label="终端设备的编号" align="center" prop="deviceId" />-->
+      <el-table-column label="所属热电偶的编号" align="center" prop="thermocoupleId" />
+      <el-table-column label="所属热电偶的名称" align="center" prop="thermocoupleName" />
+      <el-table-column label="所属热电偶的位置" align="center" prop="thermocoupleLocation" />
+      <el-table-column label="终端设备的编号" align="center" prop="deviceId" />
       <el-table-column label="终端设备的名称" align="center" prop="deviceName" />
-<!--      <el-table-column label="热电偶的编号" align="center" prop="thermocoupleId" />-->
-      <el-table-column label="热电偶的名称" align="center" prop="thermocoupleName" />
-      <el-table-column label="热点偶的位置" align="center" prop="thermocoupleLocation" />
-<!--      <el-table-column label="所属电解槽的编号" align="center" prop="electrolyticCellId" />-->
+      <el-table-column label="所属电解槽的编号" align="center" prop="electrolyticCellId" />
       <el-table-column label="所属电解槽的名称" align="center" prop="electrolyticCellName" />
-<!--      <el-table-column label="所属车间的编号" align="center" prop="workshopId" />-->
+      <el-table-column label="所属车间的编号" align="center" prop="workshopId" />
       <el-table-column label="所属车间的名称" align="center" prop="workshopName" />
-<!--      <el-table-column label="所属工厂的编号" align="center" prop="factoryId" />-->
+      <el-table-column label="所属工厂的编号" align="center" prop="factoryId" />
       <el-table-column label="所属工厂的名称" align="center" prop="factoryName" />
-<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-edit"-->
-<!--            @click="handleUpdate(scope.row)"-->
-<!--            v-hasPermi="['fac:temper:edit']"-->
-<!--          >修改</el-button>-->
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            icon="el-icon-delete"-->
-<!--            @click="handleDelete(scope.row)"-->
-<!--            v-hasPermi="['fac:temper:remove']"-->
-<!--          >删除</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['fac:temper:edit']"
+          >修改</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-delete"
+            @click="handleDelete(scope.row)"
+            v-hasPermi="['fac:temper:remove']"
+          >删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
-
+    
     <pagination
       v-show="total>0"
       :total="total"
@@ -219,20 +219,20 @@
             placeholder="请选择采集的时间">
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="所属热电偶的编号" prop="thermocoupleId">
+          <el-input v-model="form.thermocoupleId" placeholder="请输入所属热电偶的编号" />
+        </el-form-item>
+        <el-form-item label="所属热电偶的名称" prop="thermocoupleName">
+          <el-input v-model="form.thermocoupleName" placeholder="请输入所属热电偶的名称" />
+        </el-form-item>
+        <el-form-item label="所属热电偶的位置" prop="thermocoupleLocation">
+          <el-input v-model="form.thermocoupleLocation" placeholder="请输入所属热电偶的位置" />
+        </el-form-item>
         <el-form-item label="终端设备的编号" prop="deviceId">
           <el-input v-model="form.deviceId" placeholder="请输入终端设备的编号" />
         </el-form-item>
         <el-form-item label="终端设备的名称" prop="deviceName">
           <el-input v-model="form.deviceName" placeholder="请输入终端设备的名称" />
-        </el-form-item>
-        <el-form-item label="热电偶的编号" prop="thermocoupleId">
-          <el-input v-model="form.thermocoupleId" placeholder="请输入热电偶的编号" />
-        </el-form-item>
-        <el-form-item label="热电偶的名称" prop="thermocoupleName">
-          <el-input v-model="form.thermocoupleName" placeholder="请输入热电偶的名称" />
-        </el-form-item>
-        <el-form-item label="热点偶的位置" prop="thermocoupleLocation">
-          <el-input v-model="form.thermocoupleLocation" placeholder="请输入热点偶的位置" />
         </el-form-item>
         <el-form-item label="所属电解槽的编号" prop="electrolyticCellId">
           <el-input v-model="form.electrolyticCellId" placeholder="请输入所属电解槽的编号" />
@@ -292,11 +292,11 @@ export default {
         pageSize: 10,
         temp: null,
         acquisitionTime: null,
-        deviceId: null,
-        deviceName: null,
         thermocoupleId: null,
         thermocoupleName: null,
         thermocoupleLocation: null,
+        deviceId: null,
+        deviceName: null,
         electrolyticCellId: null,
         electrolyticCellName: null,
         workshopId: null,
@@ -335,11 +335,11 @@ export default {
         temperId: null,
         temp: null,
         acquisitionTime: null,
-        deviceId: null,
-        deviceName: null,
         thermocoupleId: null,
         thermocoupleName: null,
         thermocoupleLocation: null,
+        deviceId: null,
+        deviceName: null,
         electrolyticCellId: null,
         electrolyticCellName: null,
         workshopId: null,

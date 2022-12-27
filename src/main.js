@@ -38,7 +38,7 @@ import VueMeta from 'vue-meta'
 // 字典数据组件
 import DictData from '@/components/DictData'
 //mqtt连接
-import mqttCon from "./utils/mqttCon";
+// import mqttCon from "./utils/mqttCon";
 //data-view 数据大屏组件
 import dataV  from '@jiaminghi/data-view'
 Vue.use(dataV)
@@ -52,7 +52,7 @@ Vue.prototype.selectDictLabel = selectDictLabel
 Vue.prototype.selectDictLabels = selectDictLabels
 Vue.prototype.download = download
 Vue.prototype.handleTree = handleTree
-Vue.prototype.client=mqttCon
+// Vue.prototype.client=mqttCon
 
 // 全局组件挂载
 Vue.component('DictTag', DictTag)

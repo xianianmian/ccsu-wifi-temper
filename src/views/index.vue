@@ -16,7 +16,7 @@
         zigbee 终端 断网 电池监测 （支持查询）
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-       <span>电解槽在线数量</span>
+<!--       <span>电解槽在线数量</span>-->
         <div class="central_text chart-wrapper">
           <span class="central_text_top">{{ dateTime }}</span>
           <div class="central_text_center">
@@ -27,7 +27,7 @@
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-        <span>运行状况</span>
+<!--        <span>运行状况</span>-->
         <div class="chart-wrapper">
           <pie-chart :chart-data="pieChartData"/>
         </div>
@@ -35,20 +35,18 @@
     </el-row>
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="8">
-
-
         zigbee终端状态实时分页展示（支持查询）
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-        温度实时曲线展示（支持查询，以电解槽或zigbee为单位）
+<!--        温度实时曲线展示（支持查询，以电解槽或zigbee为单位）-->
           <div class="chart-wrapper">
-            <dy-line-chart chartTitle="zigbee2" :chart-data="lineChartData"/>
+            <instant-dy-line-chart/>
           </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
-        温度数据实时分页展示（支持查询）
+<!--        温度数据实时分页展示（支持查询）-->
         <div class="chart-wrapper">
-          <dy-line-chart chartTitle="zigbee3" :chart-data="lineChartData"/>
+          <history-search-line-chart/>
         </div>
       </el-col>
     </el-row>
@@ -63,6 +61,9 @@ import StateForm from './dashboard/StateForm'
 import RaddarChart from './dashboard/RaddarChart'
 import PieChart from './dashboard/PieChart'
 import BarChart from './dashboard/BarChart'
+import HistorySearchLineChart from '@/views/components/HistorySearchLineChart'
+import InstantDyLineChart from '@/views/components/InstantDyLineChart'
+import {listTemper} from '@/api/fac/temper'
 
 const lineChartData = {
   newVisitis: {
@@ -77,7 +78,7 @@ const lineChartData = {
     expectedData: [80, 100, 121, 104, 105, 90, 100],
     actualData: [120, 90, 100, 138, 142, 130, 130]
   },
-  shoppings: {
+  shopping: {
     expectedData: [130, 140, 141, 142, 145, 150, 160],
     actualData: [120, 82, 91, 154, 162, 140, 130]
   },
@@ -105,7 +106,9 @@ export default {
     StateForm,
     RaddarChart,
     PieChart,
-    BarChart
+    BarChart,
+    HistorySearchLineChart,
+    InstantDyLineChart
   },
   data() {
     return {
@@ -113,6 +116,7 @@ export default {
       lineChartData: lineChartData.temp,
       pieChartData: pieChartData.pieData,
       dateTime: '',
+
       getData: {
         device_id: null,
         Temp1: null,
@@ -131,23 +135,12 @@ export default {
     }
   },
   mounted() {
-    this.mqttSubscribe()
-    setInterval(() => {
-      this.dateTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}')
-      lineChartData.temp.temp1.push(+(Math.random() * 10 + 5).toFixed(1))
-      lineChartData.temp.temp2.push(+(Math.random() * 10 + 5).toFixed(1))
-      lineChartData.temp.temp3.push(+(Math.random() * 10 + 5).toFixed(1))
-      lineChartData.temp.temp4.push(+(Math.random() * 10 + 5).toFixed(1))
-      lineChartData.temp.time.push(this.parseTime(new Date(), '{h}:{i}:{s}'))
-      if (lineChartData.temp.temp1.length > 10) lineChartData.temp.temp1.shift()
-      if (lineChartData.temp.temp2.length > 10) lineChartData.temp.temp2.shift()
-      if (lineChartData.temp.temp3.length > 10) lineChartData.temp.temp3.shift()
-      if (lineChartData.temp.temp4.length > 10) lineChartData.temp.temp4.shift()
-      if (lineChartData.temp.time.length > 10) lineChartData.temp.time.shift()
-    }, 1000)
+    // this.mqttSubscribe()
+    listTemper().then((res)=>{
+      console.log(res.data)
+    })
   },
   methods: {
-
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
     },
