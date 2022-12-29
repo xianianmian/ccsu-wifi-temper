@@ -3,12 +3,12 @@
     <el-row :gutter="10">
       <el-col :xs="24" :sm="24" :lg="24">
         <div style="margin: 10px">
-          <span>车间选择：</span>
+          <span>当前车间：</span>
           <el-radio-group v-model="workshopSelected" size="mini">
-            <el-radio-button label="车间1"></el-radio-button>
-            <el-radio-button label="车间2"></el-radio-button>
-            <el-radio-button label="车间3"></el-radio-button>
-            <el-radio-button label="车间4"></el-radio-button>
+            <el-radio-button label="1">一号车间</el-radio-button>
+            <el-radio-button label="2">二号车间</el-radio-button>
+            <el-radio-button label="3">三号车间</el-radio-button>
+            <el-radio-button label="4">四号车间</el-radio-button>
           </el-radio-group>
         </div>
       </el-col>
@@ -46,7 +46,7 @@
       <el-col :xs="24" :sm="24" :lg="8">
 <!--        温度数据实时分页展示（支持查询）-->
         <div class="chart-wrapper">
-          <history-search-line-chart/>
+          <history-search-line-chart :word-shop-id="workshopSelected"/>
         </div>
       </el-col>
     </el-row>
@@ -112,7 +112,7 @@ export default {
   },
   data() {
     return {
-      workshopSelected: '车间1',
+      workshopSelected: 1,
       lineChartData: lineChartData.temp,
       pieChartData: pieChartData.pieData,
       dateTime: '',
