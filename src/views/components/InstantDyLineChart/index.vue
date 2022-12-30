@@ -15,6 +15,9 @@
 
 <script>
 import DyLineChart from '@/views/dashboard/DyLineChart'
+import {getWorkshop} from '@/api/fac/workshop';
+import {listDevice} from '@/api/fac/device';
+import {listCell} from '@/api/fac/cell'
 
 let data1 = {
   time: ['19:50', '19:55', '20:00', '20:05', '20:10', '20:15', '20:20'],
@@ -35,31 +38,13 @@ export default {
   data() {
     return {
       //级联选择器
-      value: ['1', '89118469'],
-      options: [{
-        value: '1',
-        label: '一号电解槽',
-        children: [{
-          value: '89118469',
-          label: '一号设备'
-        }, {
-          value: '88796439',
-          label: '二号设备'
-        }, {
-          value: '41706553465497',
-          label: '三号设备'
-        }, {
-          value: '92106549165495',
-          label: '四号设备'
-        }, {
-          value: '2047215865496',
-          label: '五号设备'
-        }]
-      }, {
-        value: '2',
-        label: '二号电解槽',
-        children: []
-      }],
+      tempList1:[],
+      optionsObj:{
+        value:null,
+        label:null,
+        children:[]
+      },
+      options:[],
       //图表
       chartData: {},
 
@@ -70,6 +55,7 @@ export default {
   mounted() {
     this.chartData = data1
     this.getData()
+    this.getDevicedata()
   },
   methods: {
     handleChange(value) {
@@ -103,7 +89,37 @@ export default {
         if (data1.temp4.length > 10) data1.temp4.shift()
         if (data1.time.length > 10) data1.time.shift()
       }, 1000)
-    }
+    },
+    getDevicedata(){
+      let workShopId = 1
+      getWorkshop(workShopId)
+      .then(res=>{
+        this.tempList1 = res.data.facElectrolyticCellList
+      })
+      .then(res=>{
+        this.tempList1.forEach(x=>{
+          listDevice(x.electrolyticcellId).then(response=>{
+            var tempobj={value:null,label:null,children:[]}
+            this.optionsObj.value=x.electrolyticcellId
+            this.optionsObj.label=x.electrolyticcellName
+            response.rows.forEach(x=>{
+              var tempchild={value:null,label:null}
+              var temp=tempchild
+              tempchild.value=x.deviceId
+              tempchild.label=x.deviceName
+              this.optionsObj.children.push(tempchild)
+              tempchild=temp
+            })
+            this.options.push(this.optionsObj)
+            this.optionsObj=tempobj
+          })
+          // console.log(this.options)
+        })
+      })
+      listCell(this.tempList1).then(res=>{
+        // console.log(res.rows)
+      })
+    },
   }
 }
 </script>
@@ -113,3 +129,4 @@ export default {
   margin: 0 8px;
 }
 </style>
+
