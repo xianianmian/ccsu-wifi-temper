@@ -54,17 +54,8 @@
     </div>
     <div class="footer">
       <img src="@/assets/logo/search.png" alt="" />
-      <el-date-picker
-        v-model="value2"
-        type="datetimerange"
-        range-separator="至"
-        start-placeholder="故障开始日期"
-        end-placeholder="故障结束日期"
-        align="right"
-        size="mini"
-        @change="find"
-      >
-      </el-date-picker>
+      <el-input placeholder="请输入故障发生时间"></el-input>
+      <el-button type="primary">查询</el-button>
     </div>
   </div>
 </template>
@@ -198,11 +189,18 @@ export default {
 }
 .footer{
   display: flex;
-  margin: 21px 0;
+  justify-content: center;
+  margin: 12px 0;
 }
 img {
   width: 24px;
-  height: 18px;
+  height: 34px;
   margin: 2px;
+}
+.el-input{
+  width: 282px;
+}
+.el-button{
+  margin-left: 10px;
 }
 </style>
