@@ -15,6 +15,7 @@
 
 <script>
 import HistoryLineChart from '@/views/dashboard/HistoryLineChart'
+import { listTemper } from '@/api/fac/temper'
 
 const data1 = {
   time: ['19:50', '19:55', '20:00', '20:05', '20:10', '20:15', '20:20'],
@@ -32,6 +33,12 @@ const data2 = {
 }
 export default {
   components: { HistoryLineChart },
+  props: {
+    wordShopId: {
+      type: String,
+      require: true
+    }
+  },
   data() {
     return {
       //级联选择器
@@ -61,23 +68,84 @@ export default {
         children: []
       }],
       //图表
-      chartData: {}
+      chartData: {
+        time: [],
+        temp1: [],
+        temp2: [],
+        temp3: [],
+        temp4: []
+      },
+
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 40,
+        deviceId: null,//this.value[0]
+        electrolyticCellId: null,//this.value[1]
+        workshopId: null,//组件传参（由首页传入）this.wordShopId
+        temp: null,
+        acquisitionTime: null,
+        thermocoupleId: null,
+        thermocoupleName: null,
+        thermocoupleLocation: null,
+        deviceName: null,
+        electrolyticCellName: null,
+        workshopName: null,
+        factoryId: null,
+        factoryName: null
+      }
     }
   },
   mounted() {
     this.chartData = data1
   },
   methods: {
-    handleChange(value) {
-      console.log(value)
-      if (this.value.includes('89118469')) {
-        this.chartData = data1
-      } else if (this.value.includes('88796439')) {
-        this.chartData = data2
-      } else {
-        this.chartData = {}
+    handleChange() {
+      // 设置参数
+      this.value.forEach((item, index, arr) => {
+        this.queryParams.electrolyticCellId = arr[0]
+        this.queryParams.deviceId = arr[1]
+        this.queryParams.workshopId = this.wordShopId
+      })
+      //调用查询接口
+      this.getData()
+    },
+    getData() {
+      let _chartData = {//临时变量（图表数据）
+        time: [],
+        temp1: [],
+        temp2: [],
+        temp3: [],
+        temp4: []
       }
+      // 执行请求，拿到数据
+      listTemper(this.queryParams).then(res => {
+        console.log('listTemper >>', res.rows)
+        // 遍历 处理需要的图表数据
+        let list = res.rows.forEach((item, index, arr) => {
+          console.log(arr[index].thermocoupleId)
+          if (arr[index].thermocoupleId === '1') {
+            _chartData.time.push(this.parseTime(arr[index].acquisitionTime, '{h}:{i}:{s}'))//四个电解槽时间一样，取其一
+            _chartData.temp1.push(arr[index].temp)
+            console.log(1)
+          } else if (arr[index].thermocoupleId === '2') {
+            _chartData.temp2.push(arr[index].temp)
+            console.log(2)
+          } else if (arr[index].thermocoupleId === '3') {
+            _chartData.temp3.push(arr[index].temp)
+            console.log(3)
+          } else if (arr[index].thermocoupleId === '4') {
+            _chartData.temp4.push(arr[index].temp)
+            console.log(4)
+          }
+        })
+        console.log('____', _chartData)
+      })
+
+      //将临时变量数据赋值给图表数据
+      this.chartData = _chartData
     }
+
   }
 }
 </script>

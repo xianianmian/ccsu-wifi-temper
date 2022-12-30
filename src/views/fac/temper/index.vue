@@ -9,13 +9,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="采集的时间" prop="acquisitionTime">
-        <el-date-picker clearable
-          v-model="queryParams.acquisitionTime"
-          type="date"
+      <el-form-item label="采集的时间">
+        <el-date-picker
+          v-model="daterangeAcquisitionTime"
+          style="width: 240px"
           value-format="yyyy-MM-dd"
-          placeholder="请选择采集的时间">
-        </el-date-picker>
+          type="daterange"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item label="所属热电偶的编号" prop="thermocoupleId">
         <el-input
@@ -163,7 +166,7 @@
       <el-table-column label="温度值" align="center" prop="temp" />
       <el-table-column label="采集的时间" align="center" prop="acquisitionTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="所属热电偶的编号" align="center" prop="thermocoupleId" />
@@ -196,7 +199,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -286,6 +289,8 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 所属工厂的名称时间范围
+      daterangeAcquisitionTime: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -318,6 +323,11 @@ export default {
     /** 查询温度管理列表 */
     getList() {
       this.loading = true;
+      this.queryParams.params = {};
+      if (null != this.daterangeAcquisitionTime && '' != this.daterangeAcquisitionTime) {
+        this.queryParams.params["beginAcquisitionTime"] = this.daterangeAcquisitionTime[0];
+        this.queryParams.params["endAcquisitionTime"] = this.daterangeAcquisitionTime[1];
+      }
       listTemper(this.queryParams).then(response => {
         this.temperList = response.rows;
         this.total = response.total;
@@ -356,6 +366,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.daterangeAcquisitionTime = [];
       this.resetForm("queryForm");
       this.handleQuery();
     },
