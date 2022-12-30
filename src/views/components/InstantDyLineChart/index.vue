@@ -102,12 +102,14 @@ export default {
             var tempobj={value:null,label:null,children:[]}
             this.optionsObj.value=x.electrolyticcellId
             this.optionsObj.label=x.electrolyticcellName
-            response.rows.forEach(x=>{
+            response.rows.forEach(y=>{
               var tempchild={value:null,label:null}
               var temp=tempchild
-              tempchild.value=x.deviceId
-              tempchild.label=x.deviceName
-              this.optionsObj.children.push(tempchild)
+              tempchild.value=y.deviceId
+              tempchild.label=y.deviceName
+              if(y.electrolyticellId === x.electrolyticcellId){
+                this.optionsObj.children.push(tempchild)
+              }
               tempchild=temp
             })
             this.options.push(this.optionsObj)
