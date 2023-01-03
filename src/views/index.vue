@@ -18,12 +18,7 @@
       <el-col :xs="24" :sm="24" :lg="8">
 <!--       <span>电解槽在线数量</span>-->
         <div class="central_text chart-wrapper">
-          <span class="central_text_top">{{ dateTime }}</span>
-          <div class="central_text_center">
-            <div style="font-size:20px;color:#7a9064;margin-bottom: 10px;">电解槽总运行数量</div>
-            <div style="color:#5dbec8;font-size: 20px;"><span style="font-size:45px;">12</span>个</div>
-            <div style="color:#7a9064;font-size:20px">安全运行率：100%</div>
-          </div>
+          <device-number></device-number>
         </div>
       </el-col>
       <el-col :xs="24" :sm="24" :lg="8">
@@ -64,6 +59,7 @@ import BarChart from './dashboard/BarChart'
 import HistorySearchLineChart from '@/views/components/HistorySearchLineChart'
 import InstantDyLineChart from '@/views/components/InstantDyLineChart'
 import {listTemper} from '@/api/fac/temper'
+import DeviceNumber from './dashboard/DeviceNumber.vue'
 
 const lineChartData = {
   newVisitis: {
@@ -108,7 +104,8 @@ export default {
     PieChart,
     BarChart,
     HistorySearchLineChart,
-    InstantDyLineChart
+    InstantDyLineChart,
+    DeviceNumber
   },
   data() {
     return {
@@ -187,14 +184,14 @@ export default {
     justify-content: space-around;
   }
 
-  .central_text_top {
-    margin-top: 10px;
-    color: #4d6fc1;
-  }
+  // .central_text_top {
+  //   margin-top: 10px;
+  //   color: #4d6fc1;
+  // }
 
-  .central_text_center {
-    margin: 82px;
-  }
+  // .central_text_center {
+  //   margin: 82px;
+  // }
 
 
   .text_title {
