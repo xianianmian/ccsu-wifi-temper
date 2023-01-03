@@ -8,12 +8,6 @@ export function listCellError(query) {
     params: query
   })
 }
-// export function listCellError(condition) {
-//   return request({
-//     url: `/fac/cellError/list?pageNum=${condition.pageNum}&pageSize=${condition.pageSize}&params%5BbeginAcquisitionTime%5D=${condition.beginAcquisitionTime}&params%5BendAcquisitionTime%5D=${condition.endAcquisitionTime}`,
-//     method: 'get',
-//   })
-// }
 // 查询电解槽故障详细
 export function getCellError(id) {
   return request({
