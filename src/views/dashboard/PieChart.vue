@@ -95,9 +95,9 @@ export default {
     chartData: {
       type: Array,
       default: [
-        { value: 320, name: "正常" },
-        { value: 22, name: "预警" },
-        { value: 9, name: "故障" },
+        { value: this.condition.normal, name: "正常" },
+        { value: this.condition.warning, name: "预警" },
+        { value: this.condition.error, name: "故障" },
       ],
     },
   },
