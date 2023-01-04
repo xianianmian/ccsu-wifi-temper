@@ -107,13 +107,14 @@ export default {
       // 设置查询故障时间的默认值
       value1: "",
       // 定时器
-      timer:null,
+      timer1:null,
+      timer2:null,
       // 电解槽情况
       condition: {
-        all: 0,
-        error: 0,
+        all: 2,
+        error: 2,
         normal: 0,
-        warning: 0,
+        warning: 1,
       },
       errorPercent: 1,
       normalPercent: 1,
@@ -121,15 +122,18 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
     // 启动时自动调用一次获取相关信息
     this.getListCellError();
     // 每隔30分钟获取一次数据
-    this.timer=setInterval(()=>{
+    this.timer1=setInterval(()=>{
       this.getListCellError()
     },1000*60*30);
+    // this.$nextTick(() => {
+    //   this.initChart();
+    // });
+    this.timer2=setInterval(()=>{
+      this.initChart()
+    },1000)
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -142,6 +146,18 @@ export default {
     find() {
       if (this.value1 != "" && this.value1 != null)
         this.$router.push("/fac/cellError");
+    },
+    getListCellError() {
+      listCellError().then((res) => {
+        console.log(res.data);
+        this.condition.all=res.data.all;
+        this.condition.error=res.data.error;
+        this.condition.normal=res.data.normal;
+        this.condition.warning=res.data.warning;
+        this.errorPercent = (res.data.error / res.data.all).toFixed(2);
+        this.normalPercent = (res.data.normal / res.data.all).toFixed(2);
+        this.warningPercent = (res.data.warning / res.data.all).toFixed(2);
+      });
     },
     initChart() {
       this.chart = echarts.init(
@@ -159,23 +175,15 @@ export default {
             name: "故障占比",
             type: "pie",
             radius: "40%",
-            data: this.chartData,
+            data: [
+              {value:this.condition.normal,name:"正常"},
+              {value:this.condition.warning,name:"预警"},
+              {value:this.condition.error,name:"故障"}
+            ],
             animationEasing: "cubicInOut",
             animationDuration: 2600,
           },
         ],
-      });
-    },
-    getListCellError() {
-      listCellError().then((res) => {
-        console.log(res.data);
-        this.condition.all=res.data.all;
-        this.condition.error=res.data.error;
-        this.condition.normal=res.data.normal;
-        this.condition.warning=res.data.warning;
-        this.errorPercent = (res.data.error / res.data.all).toFixed(2);
-        this.normalPercent = (res.data.normal / res.data.all).toFixed(2);
-        this.warningPercent = (res.data.warning / res.data.all).toFixed(2);
       });
     },
   },
