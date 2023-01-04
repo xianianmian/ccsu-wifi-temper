@@ -7,9 +7,9 @@
           <div class="left1-main">
             <div class="radius" style="background-color: #2ec7c9"></div>
             <div>
-              <span>100个</span>
+              <span>{{ condition.normal }}</span>
               <br />
-              <span>占比:100%</span>
+              <span>占比:{{ normalPercent * 100 }}%</span>
             </div>
           </div>
         </el-card>
@@ -21,9 +21,9 @@
               style="background-color: rgb(200, 178, 244)"
             ></div>
             <div>
-              <span>100个</span>
+              <span>{{ condition.warning }}</span>
               <br />
-              <span>占比:100%</span>
+              <span>占比:{{ warningPercent * 100 }}%</span>
             </div>
           </div>
         </el-card>
@@ -35,36 +35,34 @@
               style="background-color: rgb(90, 177, 239)"
             ></div>
             <div>
-              <span>100个</span>
+              <span>{{ condition.error }}</span>
               <br />
-              <span>占比:100%</span>
+              <span>占比:{{ errorPercent * 100 }}%</span>
             </div>
           </div>
         </el-card>
       </div>
       <div class="main-right">
-        <span style="font-size: 10px">数据每5分钟更新</span>
+        <span style="font-size: 10px">数据每30分钟更新</span>
         <div
           :class="className"
           :style="{ height: height, width: width, marginbottom: marginbottom }"
         />
-        <div style="display: flex; justify-content: space-between">
-        </div>
+        <div style="display: flex; justify-content: space-between"></div>
       </div>
     </div>
     <div class="footer">
       <img src="@/assets/logo/search.png" alt="" />
+      <!-- <el-input placeholder="故障记录查询"></el-input> -->
       <el-date-picker
-        v-model="value2"
+        v-model="value1"
         type="datetimerange"
         range-separator="至"
         start-placeholder="故障开始日期"
         end-placeholder="故障结束日期"
-        align="right"
-        size="mini"
-        @change="find"
       >
       </el-date-picker>
+      <el-button type="primary" @click="find()">查询</el-button>
     </div>
   </div>
 </template>
@@ -74,7 +72,7 @@ import echarts from "echarts";
 
 require("echarts/theme/macarons"); // echarts theme
 import resize from "./mixins/resize";
-
+import { listCellError } from "@/api/fac/cellError.js";
 export default {
   mixins: [resize],
   props: {
@@ -107,13 +105,35 @@ export default {
     return {
       chart: null,
       // 设置查询故障时间的默认值
-      value2: "",
+      value1: "",
+      // 定时器
+      timer1:null,
+      timer2:null,
+      // 电解槽情况
+      condition: {
+        all: 2,
+        error: 2,
+        normal: 0,
+        warning: 1,
+      },
+      errorPercent: 1,
+      normalPercent: 1,
+      warningPercent: 1,
     };
   },
   mounted() {
-    this.$nextTick(() => {
-      this.initChart();
-    });
+    // 启动时自动调用一次获取相关信息
+    this.getListCellError();
+    // 每隔30分钟获取一次数据
+    this.timer1=setInterval(()=>{
+      this.getListCellError()
+    },1000*60*30);
+    // this.$nextTick(() => {
+    //   this.initChart();
+    // });
+    this.timer2=setInterval(()=>{
+      this.initChart()
+    },1000)
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -124,8 +144,20 @@ export default {
   },
   methods: {
     find() {
-      if(this.value2!=""&&this.value2!=null)
-      this.$router.push("/fac/cellError");
+      if (this.value1 != "" && this.value1 != null)
+        this.$router.push("/fac/cellError");
+    },
+    getListCellError() {
+      listCellError().then((res) => {
+        console.log(res.data);
+        this.condition.all=res.data.all;
+        this.condition.error=res.data.error;
+        this.condition.normal=res.data.normal;
+        this.condition.warning=res.data.warning;
+        this.errorPercent = (res.data.error / res.data.all).toFixed(2);
+        this.normalPercent = (res.data.normal / res.data.all).toFixed(2);
+        this.warningPercent = (res.data.warning / res.data.all).toFixed(2);
+      });
     },
     initChart() {
       this.chart = echarts.init(
@@ -143,7 +175,11 @@ export default {
             name: "故障占比",
             type: "pie",
             radius: "40%",
-            data: this.chartData,
+            data: [
+              {value:this.condition.normal,name:"正常"},
+              {value:this.condition.warning,name:"预警"},
+              {value:this.condition.error,name:"故障"}
+            ],
             animationEasing: "cubicInOut",
             animationDuration: 2600,
           },
@@ -164,8 +200,9 @@ export default {
   color: #7a97a5;
   justify-content: space-between;
 }
-.main{
+.main {
   display: flex;
+  justify-content: space-around;
 }
 .main-left {
   width: 143px;
@@ -196,13 +233,21 @@ export default {
   width: 220px;
   height: 100%;
 }
-.footer{
+.footer {
   display: flex;
-  margin: 21px 0;
+  justify-content: center;
+  margin: 12px 28px;
 }
 img {
   width: 24px;
-  height: 18px;
-  margin: 2px;
+  height: 34px;
+}
+.el-input {
+  width: 282px;
+  margin: 0 12px;
+}
+.el-button {
+  margin-left: 10px;
+  width: 50px;
 }
 </style>

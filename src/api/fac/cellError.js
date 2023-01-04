@@ -8,7 +8,6 @@ export function listCellError(query) {
     params: query
   })
 }
-
 // 查询电解槽故障详细
 export function getCellError(id) {
   return request({
