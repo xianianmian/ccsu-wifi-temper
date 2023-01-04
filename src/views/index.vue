@@ -37,13 +37,13 @@
       <el-col :xs="24" :sm="24" :lg="8">
         zigbee终端状态实时分页展示（支持查询）
       </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-<!--        温度实时曲线展示（支持查询，以电解槽或zigbee为单位）-->
-          <div class="chart-wrapper">
-            <instant-dy-line-chart/>
-          </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
+<!--      <el-col :xs="24" :sm="24" :lg="8">-->
+<!--&lt;!&ndash;        温度实时曲线展示（支持查询，以电解槽或zigbee为单位）&ndash;&gt;-->
+<!--          <div class="chart-wrapper">-->
+<!--            <instant-dy-line-chart/>-->
+<!--          </div>-->
+<!--      </el-col>-->
+      <el-col :xs="24" :sm="24" :lg="16">
 <!--        温度数据实时分页展示（支持查询）-->
         <div class="chart-wrapper">
           <history-search-line-chart :word-shop-id="workshopSelected"/>

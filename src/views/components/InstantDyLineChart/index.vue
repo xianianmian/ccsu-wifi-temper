@@ -15,9 +15,9 @@
 
 <script>
 import DyLineChart from '@/views/dashboard/DyLineChart'
-import {getWorkshop} from '@/api/fac/workshop';
-import {listDevice} from '@/api/fac/device';
-import {listCell} from '@/api/fac/cell'
+import { getWorkshop } from '@/api/fac/workshop'
+import { listDevice } from '@/api/fac/device'
+import { listCell } from '@/api/fac/cell'
 
 let data1 = {
   time: ['19:50', '19:55', '20:00', '20:05', '20:10', '20:15', '20:20'],
@@ -38,13 +38,14 @@ export default {
   data() {
     return {
       //级联选择器
-      tempList1:[],
-      optionsObj:{
-        value:null,
-        label:null,
-        children:[]
+      tempList1: [],
+      optionsObj: {
+        value: null,
+        label: null,
+        children: []
       },
-      options:[],
+      value:[],
+      options: [],
       //图表
       chartData: {},
 
@@ -60,11 +61,11 @@ export default {
   methods: {
     handleChange(value) {
       console.log(value)
-      if (this.value.includes('89118469')) {
+      if (this.value.includes('48484849')) {
         data1 = data2
-        this.chartData = data1
+        this.chartData = data
         this.getData()
-      } else if (this.value.includes('88796439')) {
+      } else if (this.value.includes('48484850')) {
         data1 = data2
         this.chartData = data1
         this.getData()
@@ -90,38 +91,38 @@ export default {
         if (data1.time.length > 10) data1.time.shift()
       }, 1000)
     },
-    getDevicedata(){
+    getDevicedata() {
       let workShopId = 1
       getWorkshop(workShopId)
-      .then(res=>{
-        this.tempList1 = res.data.facElectrolyticCellList
-      })
-      .then(res=>{
-        this.tempList1.forEach(x=>{
-          listDevice(x.electrolyticcellId).then(response=>{
-            var tempobj={value:null,label:null,children:[]}
-            this.optionsObj.value=x.electrolyticcellId
-            this.optionsObj.label=x.electrolyticcellName
-            response.rows.forEach(y=>{
-              var tempchild={value:null,label:null}
-              var temp=tempchild
-              tempchild.value=y.deviceId
-              tempchild.label=y.deviceName
-              if(y.electrolyticellId === x.electrolyticcellId){
-                this.optionsObj.children.push(tempchild)
-              }
-              tempchild=temp
-            })
-            this.options.push(this.optionsObj)
-            this.optionsObj=tempobj
-          })
-          // console.log(this.options)
+        .then(res => {
+          this.tempList1 = res.data.facElectrolyticCellList
         })
-      })
-      listCell(this.tempList1).then(res=>{
+        .then(res => {
+          this.tempList1.forEach(x => {
+            listDevice(x.electrolyticcellId).then(response => {
+              var tempobj = { value: null, label: null, children: [] }
+              this.optionsObj.value = x.electrolyticcellId
+              this.optionsObj.label = x.electrolyticcellName
+              response.rows.forEach(y => {
+                var tempchild = { value: null, label: null }
+                var temp = tempchild
+                tempchild.value = y.deviceId
+                tempchild.label = y.deviceName
+                if (y.electrolyticellId === x.electrolyticcellId) {
+                  this.optionsObj.children.push(tempchild)
+                }
+                tempchild = temp
+              })
+              this.options.push(this.optionsObj)
+              this.optionsObj = tempobj
+            })
+            // console.log(this.options)
+          })
+        })
+      listCell(this.tempList1).then(res => {
         // console.log(res.rows)
       })
-    },
+    }
   }
 }
 </script>

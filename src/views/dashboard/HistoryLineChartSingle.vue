@@ -66,10 +66,10 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ time, temp1, temp2, temp3, temp4 } = {}) {
+    setOptions({ time, temp } = {}) {
       this.chart.setOption({
         title: {
-          left: 5,
+          left: 20,
           text: this.chartTitle
         },
         xAxis: {
@@ -99,13 +99,8 @@ export default {
           },
           scale:true
         },
-        legend: {
-          right: 0,
-          bottom:0,
-          data: ['temp1', 'temp2', 'temp3', 'temp4']
-        },
         series: [{
-          name: 'temp1',
+          name: 'temp',
           itemStyle: {
             normal: {
               color: '#FF005A',
@@ -117,70 +112,10 @@ export default {
           },
           smooth: true,
           type: 'line',
-          data: temp1,
+          data: temp,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
-        },
-          {
-            name: 'temp2',
-            smooth: true,
-            type: 'line',
-            itemStyle: {
-              normal: {
-                color: '#3888fa',
-                lineStyle: {
-                  color: '#3888fa',
-                  width: 2
-                },
-                areaStyle: {
-                  color: '#f3f8ff'
-                }
-              }
-            },
-            data: temp2,
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
-          },
-          {
-            name: 'temp3',
-            smooth: true,
-            type: 'line',
-            itemStyle: {
-              normal: {
-                color: '#fad338',
-                lineStyle: {
-                  color: '#fad338',
-                  width: 2
-                },
-                areaStyle: {
-                  color: '#f3f8ff'
-                }
-              }
-            },
-            data: temp3,
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
-          },
-          {
-            name: 'temp4',
-            smooth: true,
-            type: 'line',
-            itemStyle: {
-              normal: {
-                color: '#f038fa',
-                lineStyle: {
-                  color: '#f038fa',
-                  width: 2
-                },
-                areaStyle: {
-                  color: '#f3f8ff'
-                }
-              }
-            },
-            data: temp4,
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
-          }
+        }
         ]
       })
     }

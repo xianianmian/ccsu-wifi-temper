@@ -5,9 +5,14 @@
       <el-cascader
         v-model="value"
         :options="options"
-        :props="{ expandTrigger: 'hover' }"
+        filterable
+        clearable
+        @visible-change="refreshOptions($event)"
         @change="handleChange(value)"
       ></el-cascader>
+      <el-button @click="routerTo()">
+        查询
+      </el-button>
     </div>
     <history-line-chart :chart-data="chartData" chart-title="历史温度"></history-line-chart>
   </div>
@@ -16,21 +21,10 @@
 <script>
 import HistoryLineChart from '@/views/dashboard/HistoryLineChart'
 import { listTemper } from '@/api/fac/temper'
+import { getWorkshop } from '@/api/fac/workshop'
+import { listDevice } from '@/api/fac/device'
+import { listCell } from '@/api/fac/cell'
 
-const data1 = {
-  time: ['19:50', '19:55', '20:00', '20:05', '20:10', '20:15', '20:20'],
-  temp1: [1, 3, 2, 4, 6, 5, 7],
-  temp2: [7, 6, 5, 3, 4, 1, 2],
-  temp3: [3, 4, 1, 2, 7, 6, 5],
-  temp4: [7, 1, 2, 6, 5, 3, 4]
-}
-const data2 = {
-  time: ['19:50', '19:55', '20:00', '20:05', '20:10', '20:15', '20:20'],
-  temp1: [5, 2, 6, 1, 6, 3, 8],
-  temp2: [1, 3, 5, 6, 7, 8, 8],
-  temp3: [9, 8, 7, 5, 3, 2, 1],
-  temp4: [3, 4, 3, 3, 4, 3, 4]
-}
 export default {
   components: { HistoryLineChart },
   props: {
@@ -42,31 +36,36 @@ export default {
   data() {
     return {
       //级联选择器
-      value: ['1', '89118469'],
-      options: [{
-        value: '1',
-        label: '一号电解槽',
-        children: [{
-          value: '89118469',
-          label: '一号设备'
-        }, {
-          value: '88796439',
-          label: '二号设备'
-        }, {
-          value: '41706553465497',
-          label: '三号设备'
-        }, {
-          value: '92106549165495',
-          label: '四号设备'
-        }, {
-          value: '2047215865496',
-          label: '五号设备'
-        }]
-      }, {
-        value: '2',
-        label: '二号电解槽',
+      tempList1: [],
+      optionsObj: {
+        value: null,
+        label: null,
         children: []
-      }],
+      },
+      value: ['1', '48484849'],
+      options: [],
+      //级联选择器
+      // options: [{
+      //   value: '1',
+      //   label: '一号电解槽',
+      //   children: [{
+      //     value: '48484849',
+      //     label: '一号设备'
+      //   }, {
+      //     value: '48484850',
+      //     label: '二号设备'
+      //   }, {
+      //     value: '48484851',
+      //     label: '三号设备'
+      //   }]
+      // }, {
+      //   value: '2',
+      //   label: '二号电解槽',
+      //   children: [{
+      //     value: '48484852',
+      //     label: '四号设备'
+      //   }]
+      // }],
       //图表
       chartData: {
         time: [],
@@ -75,7 +74,6 @@ export default {
         temp3: [],
         temp4: []
       },
-
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -97,9 +95,13 @@ export default {
     }
   },
   mounted() {
-    this.chartData = data1
+    this.handleChange()
   },
   methods: {
+    refreshOptions() {
+      this.options = []
+      this.getDevicedata()
+    },
     handleChange() {
       // 设置参数
       this.value.forEach((item, index, arr) => {
@@ -109,6 +111,14 @@ export default {
       })
       //调用查询接口
       this.getData()
+    },
+    routerTo() {
+      this.$router.push({
+        path: '/fac/tempChart',
+        params: {
+          id:this.queryParams.deviceId
+        }
+      })
     },
     getData() {
       let _chartData = {//临时变量（图表数据）
@@ -120,32 +130,52 @@ export default {
       }
       // 执行请求，拿到数据
       listTemper(this.queryParams).then(res => {
-        console.log('listTemper >>', res.rows)
         // 遍历 处理需要的图表数据
         let list = res.rows.forEach((item, index, arr) => {
-          console.log(arr[index].thermocoupleId)
           if (arr[index].thermocoupleId === '1') {
             _chartData.time.push(this.parseTime(arr[index].acquisitionTime, '{h}:{i}:{s}'))//四个电解槽时间一样，取其一
             _chartData.temp1.push(arr[index].temp)
-            console.log(1)
           } else if (arr[index].thermocoupleId === '2') {
             _chartData.temp2.push(arr[index].temp)
-            console.log(2)
           } else if (arr[index].thermocoupleId === '3') {
             _chartData.temp3.push(arr[index].temp)
-            console.log(3)
           } else if (arr[index].thermocoupleId === '4') {
             _chartData.temp4.push(arr[index].temp)
-            console.log(4)
           }
         })
-        console.log('____', _chartData)
       })
-
       //将临时变量数据赋值给图表数据
       this.chartData = _chartData
     }
-
+    ,
+    getDevicedata() {
+      let workShopId = this.wordShopId
+      getWorkshop(workShopId)
+        .then(res => {
+          this.tempList1 = res.data.facElectrolyticCellList
+        })
+        .then(res => {
+          this.tempList1.forEach(x => {
+            listDevice(x.electrolyticcellId).then(response => {
+              var tempobj = { value: null, label: null, children: [] }
+              this.optionsObj.value = x.electrolyticcellId
+              this.optionsObj.label = x.electrolyticcellName
+              response.rows.forEach(y => {
+                var tempchild = { value: null, label: null }
+                var temp = tempchild
+                tempchild.value = y.deviceId
+                tempchild.label = y.deviceName
+                if (y.electrolyticellId === x.electrolyticcellId) {
+                  this.optionsObj.children.push(tempchild)
+                }
+                tempchild = temp
+              })
+              this.options.push(this.optionsObj)
+              this.optionsObj = tempobj
+            })
+          })
+        })
+    }
   }
 }
 </script>
