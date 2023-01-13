@@ -97,10 +97,10 @@ export default {
           axisTick: {
             show: false
           },
-          scale:true
+          scale: true
         },
         series: [{
-          name: 'temp',
+          name: '温度值',
           itemStyle: {
             normal: {
               color: '#FF005A',
@@ -113,6 +113,15 @@ export default {
           smooth: true,
           type: 'line',
           data: temp,
+          markPoint: {
+            data: [
+              { type: 'max', name: '最大值' },
+              { type: 'min', name: '最小值' }
+            ]
+          },
+          markLine: {
+            data: [{ type: 'average', name: 'Avg' }]
+          },
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         }
@@ -122,3 +131,6 @@ export default {
   }
 }
 </script>
+<style scoped lang="scss">
+
+</style>

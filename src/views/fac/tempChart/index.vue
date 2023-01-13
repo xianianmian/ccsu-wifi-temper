@@ -12,21 +12,21 @@
       <el-date-picker
         v-model="daterangeAcquisitionTime"
         style="width: 240px"
-        value-format="yyyy-MM-dd"
-        type="daterange"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        type="datetimerange"
         range-separator="-"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
       ></el-date-picker>
       <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
     </div>
-    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp1}" chart-title="热电偶1"
+    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp1}" chart-title="热电偶1" class-name="his1"
     ></history-line-chart-single>
-    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp2}" chart-title="热电偶2"
+    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp2}" chart-title="热电偶2" class-name="his2"
     ></history-line-chart-single>
-    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp3}" chart-title="热电偶3"
+    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp3}" chart-title="热电偶3" class-name="his3"
     ></history-line-chart-single>
-    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp4}" chart-title="热电偶4"
+    <history-line-chart-single :chart-data="{time:chartData.time,temp:chartData.temp4}" chart-title="热电偶4" class-name="his4"
     ></history-line-chart-single>
   </div>
 </template>
@@ -85,7 +85,7 @@ export default {
       // 查询参数
       queryParams: {
         pageNum: 1,
-        pageSize: 400,
+        pageSize: 800,
         deviceId: null,//this.value[0]
         electrolyticCellId: null,//this.value[1]
         workshopId: null,//组件传参（由首页传入）this.wordShopId
@@ -105,10 +105,9 @@ export default {
     }
   },
   created() {
-    if (this.$route.params.id !== undefined) {
-      this.queryParams.deviceId = this.$route.params.id
+    if (this.$route.params.value !== undefined) {
+      this.queryParams.deviceId = this.$route.params.value
     }
-    console.log('id:==========',this.queryParams.deviceId )
   },
   mounted() {
     this.handleQuery()
@@ -117,9 +116,9 @@ export default {
     handleQuery() {
       // 设置参数
       this.value.forEach((item, index, arr) => {
-        // this.queryParams.electrolyticCellId = arr[0]
+        this.queryParams.electrolyticCellId = arr[0]
         this.queryParams.deviceId = arr[1]
-        // this.queryParams.workshopId = this.wordShopId
+        this.queryParams.workshopId = this.wordShopId
       })
       //设置时间范围参数
       this.queryParams.params = {}

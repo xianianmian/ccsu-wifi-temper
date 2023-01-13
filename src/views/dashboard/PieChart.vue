@@ -78,7 +78,7 @@ export default {
   props: {
     className: {
       type: String,
-      default: "chart",
+      default: "errorPie",
     },
     width: {
       type: String,

@@ -116,7 +116,7 @@ export default {
       this.$router.push({
         path: '/fac/tempChart',
         params: {
-          id:this.queryParams.deviceId
+          value:this.queryParams.deviceId
         }
       })
     },
