@@ -30,6 +30,20 @@ import Layout from '@/layout'
 
 // 公共路由
 export const constantRoutes = [
+  // { // 测试用
+  //   path:'/fac/qita',
+  //   component: Layout,
+  //   component: () => import('@/views/fac/qita/index'),
+  //   hidden:false,
+  //   name:'router-qita',
+  //   meta : {
+  //   noCache: false ,                 
+  //   title: 'title' ,                 
+  //   icon: 'svg-name',                
+  //   breadcrumb: true,               
+  //   activeMenu: '/fac/qita'      
+  // }
+  // },
   {
     path: '/redirect',
     component: Layout,
@@ -88,23 +102,6 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/system/test',
-  //   component: Layout,
-  //   redirect: 'noRedirect',
-  //   hidden: false,
-  //   alwaysShow: true,
-  //   meta: { title: '系统管理', icon : "system" },
-  //   children: [{
-  //     path: 'index',
-  //     component: (resolve) => require(['@/views/index'], resolve),
-  //     name: 'Test',
-  //     meta: {
-  //       title: '测试管理',
-  //       icon: 'user'
-  //     }
-  //   }]
-  // }
 ]
 
 // 动态路由，基于用户权限动态去加载
@@ -178,7 +175,8 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  }
+  },
+
 ]
 
 // 防止连续点击多次路由报错

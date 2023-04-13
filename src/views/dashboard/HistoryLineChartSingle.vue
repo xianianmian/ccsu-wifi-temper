@@ -1,15 +1,12 @@
 <template>
   <div :class="className" :style="{height:height,width:width}"/>
 </template>
-
 <script>
 import echarts from 'echarts'
-
 require('echarts/theme/macarons') // echarts theme
 import resize from './mixins/resize'
-
 export default {
-  mixins: [resize],
+  mixins: [resize], 
   props: {
     className: {
       type: String,
@@ -97,7 +94,8 @@ export default {
           axisTick: {
             show: false
           },
-          scale: true
+          // scale: true
+          type:'value'
         },
         series: [{
           name: '温度值',
@@ -132,5 +130,4 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-
 </style>

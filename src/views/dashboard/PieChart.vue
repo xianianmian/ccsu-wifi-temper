@@ -1,69 +1,71 @@
 <template>
-  <div class="container">
-    <div class="main">
-      <div class="main-left">
-        <el-card style="color: #2ec7c9">
-          <span>正常电解槽运行数量</span>
-          <div class="left1-main">
-            <div class="radius" style="background-color: #2ec7c9"></div>
-            <div>
-              <span>{{ condition.normal }}</span>
-              <br />
-              <span>占比:{{ normalPercent * 100 }}%</span>
+  <div >
+    <!-- 首页的 -->
+    <el-card class="box-card" shadow="never">
+      <div class="main">
+        <div class="main-left">
+          <el-card style="color: #2ec7c9" class="min-box-card">
+            <span>正常电解槽运行数量</span>
+            <div class="left1-main">
+              <div class="radius" style="background-color: #2ec7c9"></div>
+              <div>
+                <span>{{ condition.normal }}</span>
+                <br />
+                <span>占比:{{ normalPercent }}%</span>
+              </div>
             </div>
-          </div>
-        </el-card>
-        <el-card style="color: rgb(200, 178, 244)">
-          <span>预警电解槽运行数量</span>
-          <div class="left1-main">
-            <div
-              class="radius"
-              style="background-color: rgb(200, 178, 244)"
-            ></div>
-            <div>
-              <span>{{ condition.warning }}</span>
-              <br />
-              <span>占比:{{ warningPercent * 100 }}%</span>
+          </el-card>
+          <el-card style="color: rgb(200, 178, 244)" class="min-box-card">
+            <span>预警电解槽运行数量</span>
+            <div class="left1-main">
+              <div
+                class="radius"
+                style="background-color: rgb(200, 178, 244)"
+              ></div>
+              <div>
+                <span>{{ condition.warning }}</span>
+                <br />
+                <span>占比:{{ warningPercent  }}%</span>
+              </div>
             </div>
-          </div>
-        </el-card>
-        <el-card style="color: rgb(90, 177, 239)">
-          <span> 故障电解槽运行数量</span>
-          <div class="left1-main">
-            <div
-              class="radius"
-              style="background-color: rgb(90, 177, 239)"
-            ></div>
-            <div>
-              <span>{{ condition.error }}</span>
-              <br />
-              <span>占比:{{ errorPercent * 100 }}%</span>
+          </el-card>
+          <el-card style="color: rgb(90, 177, 239)" class="min-box-card">
+            <span> 故障电解槽运行数量</span>
+            <div class="left1-main">
+              <div
+                class="radius"
+                style="background-color: rgb(90, 177, 239)"
+              ></div>
+              <div>
+                <span>{{ condition.error }}</span>
+                <br />
+                <span>占比:{{ errorPercent }}%</span>
+              </div>
             </div>
-          </div>
-        </el-card>
+          </el-card>
+        </div>
+        <div class="main-right">
+          <span style="font-size: 10px">数据每30分钟更新</span>
+          <div
+            :class="className"
+            :style="{ height: height, width: width, marginbottom: marginbottom }"/>
+          <div style="display: flex; justify-content: space-between"></div>
+        </div>
       </div>
-      <div class="main-right">
-        <span style="font-size: 10px">数据每30分钟更新</span>
-        <div
-          :class="className"
-          :style="{ height: height, width: width, marginbottom: marginbottom }"
-        />
-        <div style="display: flex; justify-content: space-between"></div>
+      <div class="footer">
+        <el-date-picker
+          v-model="daterangeAcquisitionTime"
+          type="datetimerange"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          range-separator="至"
+          start-placeholder="故障开始日期"
+          end-placeholder="故障结束日期"
+        >
+        </el-date-picker>
+        <el-button type="primary" @click="find()">查询</el-button>
       </div>
-    </div>
-    <div class="footer">
-      <img src="@/assets/logo/search.png" alt="" />
-      <!-- <el-input placeholder="故障记录查询"></el-input> -->
-      <el-date-picker
-        v-model="value1"
-        type="datetimerange"
-        range-separator="至"
-        start-placeholder="故障开始日期"
-        end-placeholder="故障结束日期"
-      >
-      </el-date-picker>
-      <el-button type="primary" @click="find()">查询</el-button>
-    </div>
+    </el-card>
+
   </div>
 </template>
 
@@ -93,19 +95,21 @@ export default {
       default: "40px",
     },
     chartData: {
-      type: Array,
-      default: [
+      type:Array,
+      default:function(){
+        return [
         { value: 320, name: "正常" },
         { value: 22, name: "预警" },
         { value: 9, name: "故障" },
-      ],
+      ]
+      } 
     },
   },
   data() {
     return {
       chart: null,
       // 设置查询故障时间的默认值
-      value1: "",
+      daterangeAcquisitionTime:[],
       // 定时器
       timer1:null,
       timer2:null,
@@ -119,21 +123,17 @@ export default {
       errorPercent: 1,
       normalPercent: 1,
       warningPercent: 1,
+      CellErorrParams:{
+        beginAcquisitionTime: null,
+        endAcquisitionTime: null,
+        type:'temper',
+      },
+      nowTime:'',
+      agoTime:''
     };
   },
   mounted() {
-    // 启动时自动调用一次获取相关信息
-    this.getListCellError();
-    // 每隔30分钟获取一次数据
-    this.timer1=setInterval(()=>{
-      this.getListCellError()
-    },1000*60*30);
-    // this.$nextTick(() => {
-    //   this.initChart();
-    // });
-    this.timer2=setInterval(()=>{
-      this.initChart()
-    },1000)
+    this.updataCellEorrTime()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -142,22 +142,63 @@ export default {
     this.chart.dispose();
     this.chart = null;
   },
+
   methods: {
     find() {
-      if (this.value1 != "" && this.value1 != null)
-        this.$router.push("/fac/cellError");
+        this.$router.push({ 
+        path: '/fac/cellError',
+        query:{
+          time:this.daterangeAcquisitionTime
+        }
+      })
     },
+    updataCellEorrTime(){
+    var date = new Date()
+    var y = date.getFullYear()
+    var m = date.getMonth()
+    var d = date.getDate()
+    var h = date.getHours()
+    var i = date.getMinutes()
+    var s = date.getSeconds()
+    var nowdate = this.parseTime(new Date(),"{y}-{m}-{d} {h}:{i}:{s}")
+    var agodate = this.parseTime(new Date(y,m,d,h,i-30,s),"{y}-{m}-{d} {h}:{i}:{s}")
+    this.CellErorrParams.params = {};
+    this.CellErorrParams.params["beginAcquisitionTime"] = nowdate
+    this.CellErorrParams.params["endAcquisitionTime"] = agodate
+    this.getListCellError()
+
+    setInterval(()=>{
+      var dates = new Date()
+      var ys = dates.getFullYear()
+      var ms = dates.getMonth()
+      var ds = dates.getDate()
+      var hs = dates.getHours()
+      var is = dates.getMinutes()
+      var ss = dates.getSeconds()
+      nowdate = this.parseTime(new Date(ys,ms,hs,is-30,ss),"{y}-{m}-{d} {h}:{i}:{s}")
+      agodate = this.parseTime(new Date(ys,ms,ds,hs-1,is-30,ss),"{y}-{m}-{d} {h}:{i}:{s}")
+      this.CellErorrParams.params["beginAcquisitionTime"] = nowdate
+      this.CellErorrParams.params["endAcquisitionTime"] = agodate
+      this.getListCellError()
+    },1000*60*30)
+    // },1000*6)
+  },
     getListCellError() {
-      listCellError().then((res) => {
-        console.log(res.data);
-        this.condition.all=res.data.all;
-        this.condition.error=res.data.error;
-        this.condition.normal=res.data.normal;
-        this.condition.warning=res.data.warning;
-        this.errorPercent = (res.data.error / res.data.all).toFixed(2);
-        this.normalPercent = (res.data.normal / res.data.all).toFixed(2);
-        this.warningPercent = (res.data.warning / res.data.all).toFixed(2);
+      listCellError(this.CellErorrParams).then((res) => {
+        this.condition.all=this.sumArr(res.data.all);
+        this.condition.error=this.sumArr(res.data.error)
+        this.condition.normal=this.sumArr(res.data.normal);
+        this.condition.warning=this.sumArr(res.data.warning);
+        this.errorPercent = ((this.sumArr(res.data.error) / this.sumArr(res.data.all))*100).toFixed(0);
+        this.normalPercent = ((this.sumArr(res.data.normal) / this.sumArr(res.data.all))*100).toFixed(0);
+        this.warningPercent = ((this.sumArr(res.data.warning) / this.sumArr(res.data.all))*100).toFixed(0);
+        this.initChart()
       });
+    },
+    sumArr(arr){
+      let sum=0
+      arr.forEach(x=>sum+=x)
+      return sum
     },
     initChart() {
       this.chart = echarts.init(
@@ -195,14 +236,24 @@ export default {
   padding: 0;
 }
 .container {
+  height: 400px;;
   display: flex;
   flex-direction: column;
   color: #7a97a5;
   justify-content: space-between;
 }
+.box-card{
+  border: none ;
+  margin-bottom: 2px;
+  background-color: #0B253A;
+}
+.min-box-card{
+  background-color: #0B253A;
+}
 .main {
   display: flex;
   justify-content: space-around;
+  height: 358px;
 }
 .main-left {
   width: 143px;

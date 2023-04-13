@@ -42,7 +42,13 @@ import DictData from '@/components/DictData'
 //data-view 数据大屏组件
 import dataV  from '@jiaminghi/data-view'
 Vue.use(dataV)
+// event-bus.js
+import * as moment from 'moment'
+Vue.prototype.$moment = moment
+
+
 // 全局方法挂载
+
 Vue.prototype.getDicts = getDicts
 Vue.prototype.getConfigKey = getConfigKey
 Vue.prototype.parseTime = parseTime
@@ -87,5 +93,10 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+
+  // 事件总线
+  beforeCreate(){
+		Vue.prototype.$bus = this	//安装全局事件总线
+	}
 })

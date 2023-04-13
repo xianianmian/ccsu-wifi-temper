@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="170px">
       <el-form-item label="数值" prop="value">
         <el-input
           v-model="queryParams.value"
@@ -23,8 +23,8 @@
         <el-date-picker
           v-model="daterangeAcquisitionTime"
           style="width: 240px"
-          value-format="yyyy-MM-dd"
-          type="daterange"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          type="datetimerange"
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -127,38 +127,6 @@
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
         <el-button
-          type="primary"
-          plain
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-          v-hasPermi="['fac:sensor:add']"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['fac:sensor:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['fac:sensor:remove']"
-        >删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="warning"
           plain
           icon="el-icon-download"
@@ -181,7 +149,7 @@
       </el-table-column>
       <el-table-column label="采集的时间" align="center" prop="acquisitionTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.acquisitionTime, '{y}-{m}-{d} {h}-{i}-{s}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="所属热电偶的编号" align="center" prop="thermocoupleId" />

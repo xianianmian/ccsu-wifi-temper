@@ -1,5 +1,5 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}"/>
+  <div  style="width: 100%;height: 200px;"/>
 </template>
 
 <script>
@@ -10,32 +10,7 @@ import resize from './mixins/resize'
 
 export default {
   mixins: [resize],
-  props: {
-    className: {
-      type: String,
-      default: 'chart'
-    },
-    width: {
-      type: String,
-      default: '100%'
-    },
-    height: {
-      type: String,
-      default: '200px'
-    },
-    autoResize: {
-      type: Boolean,
-      default: true
-    },
-    chartData: {
-      type: Object,
-      required: true
-    },
-    chartTitle: {
-      type: String,
-      default: ''
-    }
-  },
+  props:['Xtime','temperData','chartData'],
   data() {
     return {
       chart: null
@@ -47,9 +22,10 @@ export default {
       handler(val) {
         this.setOptions(val)
       }
-    }
+    },
   },
   mounted() {
+    this.initChart()
     this.$nextTick(() => {
       this.initChart()
     })
@@ -66,14 +42,14 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions({ time, temp1, temp2, temp3, temp4 } = {}) {
+    setOptions(chartData) {
       this.chart.setOption({
         title: {
           left: 5,
-          text: this.chartTitle
+          text: '温度值'
         },
         xAxis: {
-          data: time,
+          data: chartData.Xtime,
           boundaryGap: false,
           axisTick: {
             show: false
@@ -97,91 +73,37 @@ export default {
           axisTick: {
             show: false
           },
-          scale:true
+          // scale:true,
+          type:'value'
         },
         legend: {
           right: 0,
           bottom:0,
           data: ['temp1', 'temp2', 'temp3', 'temp4']
         },
-        series: [{
-          name: 'temp1',
-          itemStyle: {
-            normal: {
-              color: '#FF005A',
-              lineStyle: {
-                color: '#FF005A',
-                width: 2
-              }
-            }
-          },
-          smooth: true,
-          type: 'line',
-          data: temp1,
-          animationDuration: 2800,
-          animationEasing: 'cubicInOut'
-        },
+        series: [
           {
-            name: 'temp2',
-            smooth: true,
-            type: 'line',
+            name: "温度值",
             itemStyle: {
               normal: {
-                color: '#3888fa',
+                color: "#FF005A",
                 lineStyle: {
-                  color: '#3888fa',
-                  width: 2
+                  color: "#FF005A",
+                  width: 2,
                 },
-                areaStyle: {
-                  color: '#f3f8ff'
-                }
-              }
+              },
             },
-            data: temp2,
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
-          },
-          {
-            name: 'temp3',
             smooth: true,
-            type: 'line',
-            itemStyle: {
-              normal: {
-                color: '#fad338',
-                lineStyle: {
-                  color: '#fad338',
-                  width: 2
-                },
-                areaStyle: {
-                  color: '#f3f8ff'
-                }
-              }
+            type: "line",
+            data: chartData.temperData ,
+            markPoint: {
+              data: [
+                { type: "max", name: "最大值" },
+                { type: "min", name: "最小值" },
+              ],
             },
-            data: temp3,
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
           },
-          {
-            name: 'temp4',
-            smooth: true,
-            type: 'line',
-            itemStyle: {
-              normal: {
-                color: '#f038fa',
-                lineStyle: {
-                  color: '#f038fa',
-                  width: 2
-                },
-                areaStyle: {
-                  color: '#f3f8ff'
-                }
-              }
-            },
-            data: temp4,
-            animationDuration: 2800,
-            animationEasing: 'quadraticOut'
-          }
-        ]
+        ],
       })
     }
   }

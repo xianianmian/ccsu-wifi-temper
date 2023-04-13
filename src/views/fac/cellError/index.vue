@@ -185,22 +185,49 @@ export default {
       // 表单参数
       form: {},
       // 表单校验
-      rules: {}
+      rules: {},
+      //
+      time:''
     }
   },
-  created() {
+  mounted(){
+    console.log(this.$router.currentRoute.query.time,'挂在')
+    if(this.$router.currentRoute.query.time !== undefined ){
+      this.queryParams.params = {};
+      // console.log(this.$router.currentRoute.query.time[0],'挂在')
+      this.queryParams.params["beginAcquisitionTime"] = this.$router.currentRoute.query.time[0]
+      this.queryParams.params["endAcquisitionTime"] = this.$router.currentRoute.query.time[1]
+    }else{
+      var date = new Date()
+      var y = date.getFullYear()
+      var m = date.getMonth()
+      var d = date.getDate()
+      var h = date.getHours()
+      var i = date.getMinutes()
+      var s = date.getSeconds()
+      var nowdate = this.parseTime(new Date(),"{y}-{m}-{d} {h}:{i}:{s}")
+      var agodate = this.parseTime(new Date(y,m,d,h,i-30,s),"{y}-{m}-{d} {h}:{i}:{s}")
+      this.queryParams.params = {};
+      this.queryParams.params["beginAcquisitionTime"] = nowdate
+      this.queryParams.params["endAcquisitionTime"] = agodate
+    }
+    
     this.getList()
+  },
+  wath:{
   },
   methods: {
     /** 查询电解槽故障列表 */
-    getList() {
+    getList() { 
       this.loading = true
       listCellError(this.queryParams).then(response => {
         this.cellErrorList = response.rows
-        this.total = response.total
+        // this.total = response.total
         this.loading = false
       })
     },
+
+
     // 取消按钮
     cancel() {
       this.open = false

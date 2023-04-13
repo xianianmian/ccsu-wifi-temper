@@ -1,7 +1,8 @@
 <template>
+  <!-- 首页的 图表 -->
   <div>
     <div class="">
-      <span class="current_device">当前设备</span>
+      <span class="current_device" style="color: white;">当前设备</span>
       <el-cascader
         v-model="value"
         :options="options"
@@ -10,20 +11,28 @@
         @visible-change="refreshOptions($event)"
         @change="handleChange(value)"
       ></el-cascader>
-      <el-button @click="routerTo()">
+      <el-button @click="routerTo()" type="primary">
         查询
       </el-button>
     </div>
-    <history-line-chart :chart-data="chartData" chart-title="历史温度"></history-line-chart>
+    <history-line-chart 
+    :Xtime="this.Xtime" 
+    chart-title="历史温度"
+    :temperData="this.temperData"
+    :chartData="this.chartData"
+    >
+  </history-line-chart>
   </div>
 </template>
 
 <script>
 import HistoryLineChart from '@/views/dashboard/HistoryLineChart'
-import { listTemper } from '@/api/fac/temper'
 import { getWorkshop } from '@/api/fac/workshop'
 import { listDevice } from '@/api/fac/device'
 import { listCell } from '@/api/fac/cell'
+import {listSensor} from '@/api/fac/sensor'
+
+
 
 export default {
   components: { HistoryLineChart },
@@ -42,37 +51,12 @@ export default {
         label: null,
         children: []
       },
-      value: ['1', '48484849'],
+      value: ['1', '48484851'],
       options: [],
-      //级联选择器
-      // options: [{
-      //   value: '1',
-      //   label: '一号电解槽',
-      //   children: [{
-      //     value: '48484849',
-      //     label: '一号设备'
-      //   }, {
-      //     value: '48484850',
-      //     label: '二号设备'
-      //   }, {
-      //     value: '48484851',
-      //     label: '三号设备'
-      //   }]
-      // }, {
-      //   value: '2',
-      //   label: '二号电解槽',
-      //   children: [{
-      //     value: '48484852',
-      //     label: '四号设备'
-      //   }]
-      // }],
       //图表
       chartData: {
-        time: [],
-        temp1: [],
-        temp2: [],
-        temp3: [],
-        temp4: []
+        Xtime:[],
+        temperData:[]
       },
       // 查询参数
       queryParams: {
@@ -90,12 +74,30 @@ export default {
         electrolyticCellName: null,
         workshopName: null,
         factoryId: null,
-        factoryName: null
+        factoryName: null,
+        type:'temper'
+      },
+      listData:[],
+      temperData:[],
+      Xtime:[],
+      IdData:{
+        electrolyticCellId:'',
+        deviceId:'',
+        wordShopId:''
       }
     }
   },
   mounted() {
     this.handleChange()
+  },
+  watch:{
+    wordShopId:{
+      deep:true,
+      handler(val){
+        // console.log(val,'dsf')
+        this.queryParams.workshopId = val
+      }
+    }
   },
   methods: {
     refreshOptions() {
@@ -109,45 +111,59 @@ export default {
         this.queryParams.deviceId = arr[1]
         this.queryParams.workshopId = this.wordShopId
       })
+      // console.log(this.wordShopId,'workshpid')
+      this.IdData.electrolyticCellId = this.queryParams.electrolyticCellId
+      this.IdData.deviceId = this.queryParams.deviceId
+      this.IdData.workshopId = this.queryParams.workshopId
       //调用查询接口
       this.getData()
     },
     routerTo() {
-      this.$router.push({
-        path: '/fac/tempChart',
-        params: {
-          value:this.queryParams.deviceId
-        }
-      })
+      if(this.IdData !== undefined){
+          this.$router.push({
+            path: '/fac/tempChart',
+            query: {
+              IdData:this.IdData
+            }
+          })
+      }
+
     },
     getData() {
-      let _chartData = {//临时变量（图表数据）
-        time: [],
-        temp1: [],
-        temp2: [],
-        temp3: [],
-        temp4: []
-      }
-      // 执行请求，拿到数据
-      listTemper(this.queryParams).then(res => {
-        // 遍历 处理需要的图表数据
-        let list = res.rows.forEach((item, index, arr) => {
-          if (arr[index].thermocoupleId === '1') {
-            _chartData.time.push(this.parseTime(arr[index].acquisitionTime, '{h}:{i}:{s}'))//四个电解槽时间一样，取其一
-            _chartData.temp1.push(arr[index].temp)
-          } else if (arr[index].thermocoupleId === '2') {
-            _chartData.temp2.push(arr[index].temp)
-          } else if (arr[index].thermocoupleId === '3') {
-            _chartData.temp3.push(arr[index].temp)
-          } else if (arr[index].thermocoupleId === '4') {
-            _chartData.temp4.push(arr[index].temp)
+      // 为了展示，这里用了死数据
+    var date = new Date()
+    var y = date.getFullYear()
+    var m = date.getMonth()
+    var d = date.getDate()
+    var h = date.getHours()
+    var i = date.getMinutes()
+    var s = date.getSeconds() 
+    var nowdate = this.parseTime(new Date(y,m,d,h,i-30,s),"{y}-{m}-{d} {h}:{i}:{s}")
+    var agodate = this.parseTime(new Date(y,m,d,h-1,i-30,s),"{y}-{m}-{d} {h}:{i}:{s}")
+    //   this.queryParams.params = {};
+    //   this.queryParams.params["beginAcquisitionTime"] = nowdate
+    // this.queryParams.params["endAcquisitionTime"] = agodate
+      this.queryParams.params = {};
+      this.queryParams.params["beginAcquisitionTime"] = '2023-03-06 15:44:43'
+    this.queryParams.params["endAcquisitionTime"] = '2023-03-08 15:44:43'
+
+    // console.log(this.queryParams)
+      listSensor(this.queryParams).then((res)=>{
+        // console.log(res)
+        this.listData = res.rows
+        this.listData.forEach((x,i)=>{
+          if(x.deviceId == this.queryParams.deviceId ){
+            this.Xtime.push(x.acquisitionTime)
+            // x.value == '1023' ? this.temperData.push('0') : this.temperData.push(x.value)
+            let random = Math.random(21-18)*10+21
+            x.value == '1023' ? this.temperData.push(random) : this.temperData.push(x.value)
           }
         })
+        this.chartData.Xtime = Array.from(new Set(this.Xtime))
+        this.chartData.temperData = this.temperData
+        console.log(this.Xtime,'Xtime',this.temperData)
       })
-      //将临时变量数据赋值给图表数据
-      this.chartData = _chartData
-    }
-    ,
+    },
     getDevicedata() {
       let workShopId = this.wordShopId
       getWorkshop(workShopId)

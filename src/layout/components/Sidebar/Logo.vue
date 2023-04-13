@@ -35,7 +35,8 @@ export default {
   },
   data() {
     return {
-      title: 'CCSU无线实时温度监测系统',
+      // title: 'CCSU无线实时温度监测系统',
+      title: `CCSU无限实时检测系统`,
       logo: logoImg
     }
   }
@@ -78,11 +79,15 @@ export default {
       display: inline-block;
       margin: 0;
       color: #fff;
-      font-weight: 600;
+      font-weight: 800;
       line-height: 50px;
-      font-size: 14px;
+      font-size: 18px;
+      
+      width: 200px;
+      height: 200px;
       font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
       vertical-align: middle;
+      
     }
   }
 

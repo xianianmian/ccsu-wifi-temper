@@ -240,8 +240,10 @@ export default {
 <style lang="scss" scoped>
 .tags-view-container {
   height: 34px;
+  /* height: 60px; */
   width: 100%;
-  background: #fff;
+  /* background: #fff; */
+  background: #304156;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
   .tags-view-wrapper {
@@ -250,6 +252,7 @@ export default {
       position: relative;
       cursor: pointer;
       height: 26px;
+      /* height: 40px; */
       line-height: 26px;
       border: 1px solid #d8dce5;
       color: #495060;
