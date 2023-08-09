@@ -8,6 +8,7 @@
       <el-button @click="voldata"> 测试电压数据的</el-button>
       <el-button @click="temperdata"> wendud的</el-button>
       <el-button @click="fun"> luoyou</el-button>
+      <el-button @click="klhfun"> klh</el-button>
     </div>
     <div>
       <el-row>
@@ -57,6 +58,7 @@
 <script>
 import {listNetWorkDect} from '@/api/fac/NetWorkDect'
 import {listWireDect} from '@/api/fac/WireDect'
+import {klhtest} from '@/api/fac/klhtest'
 import { listSensor, getSensor, delSensor, addSensor, updateSensor } from "@/api/fac/sensor";
 
 export default {
@@ -133,12 +135,6 @@ export default {
   methods:{
 
     fun(){
-      // this.$router.push({ 
-      //     path: '/fac/voltage',
-      //     params:{
-      //       time:this.time
-      //     } 
-      //   })
       var t = this.$moment().day(0).format('YYYY-MM-DD');
       console.log(t)
     },
@@ -154,16 +150,6 @@ export default {
         // this.wireList = chuliWireData()
       })
     },
-    // chuliWireData(){
-    //   let arr = []
-    //   this.wireList.forEach((x,i)=>{
-    //     let s = x.split(',')
-    //     arr.push(s[0])
-    //     s = []
-    //   })
-    //   console.log(arr)
-    //   return arr
-    // },
     ggg(){
       let tempArr = []
       let obj = []
@@ -202,20 +188,6 @@ export default {
       this.netWorkParamse.params["endAcquisitionTime"] = agodate
       this.getStatus()
 
-      // setInterval(()=>{
-      //   nowdate = this.parseTime(new Date(),"{y}-{m}-{d} {h}:{i}:{s}")
-      //   var dates = new Date()
-      //   var ys = dates.getFullYear()
-      //   var ms = dates.getMonth()
-      //   var ds = dates.getDate()
-      //   var hs = dates.getHours()
-      //   var is = dates.getMinutes()
-      //   var ss = dates.getSeconds()
-      //   agodate = this.parseTime(new Date(ys,ms,ds,hs,is-30,ss),"{y}-{m}-{d} {h}:{i}:{s}")
-      //   this.netWorkParamse.beginAcquisitionTime = nowdate
-      //   this.netWorkParamse.endAcquisitionTime = agodate
-      //   this.getStatus()
-      //   },1000*6*this.vol)
       },
     getStatus(){
       listNetWorkDect(this.netWorkParamse).then((res)=>{
@@ -252,6 +224,11 @@ export default {
       listSensor(this.queryParams).then((res)=>{
         console.log(res)
         console.log('voltag')
+      })
+    },
+    klhfun(){
+      klhtest(this.queryParams).then((res)=>{
+        console.log(res,'ss')
       })
     },
     abbb(){
